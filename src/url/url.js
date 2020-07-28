@@ -2,9 +2,9 @@ import axios from 'axios'
 
 export const URL = {
 
-    login  : '/user/login',
-    signup : '/user/signup',
-
+    signUp  : '/user/sign-up' ,
+    signIn  : '/user/sign-in' ,
+    signOut : '/user/sign-out',
 
 }
 
@@ -13,8 +13,8 @@ export const req = {
 
     user: {
 
-        login   : async (data) => { return await axios.post( URL.login, data ) },
-        signup  : async (data) => { return await axios.post( URL.signup, data ) },
+        signUp : async (data) => { return await axios.post( URL.signUp, data ) },
+        signIn : async (data) => { return await axios.post( URL.signIn, data ) },
 
     },
 
