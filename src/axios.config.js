@@ -53,7 +53,6 @@ const newAccessToken = async () => {
 const newAccessTokenAndRetry = async prevReq => {
     try {
         console.log( prevReq.headers )
-        console.log( prevReq.headers )
         prevReq.headers[ 'Authorization']  = await newAccessToken() ;
         return await axios.request( prevReq ) ;
     } catch ( err ) {
@@ -61,7 +60,6 @@ const newAccessTokenAndRetry = async prevReq => {
         throw err ;
     }
 }
-
 
 // New Token On Refresh
 axios.get( '/auth/refresh-token' )
