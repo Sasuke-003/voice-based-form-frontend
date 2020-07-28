@@ -12,6 +12,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 
+import { req } from '../../url/url'
+
 const useStyles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -60,31 +62,26 @@ class SignUp extends React.Component {
       handleSubmit = async (event) => {
   
           event.preventDefault();
-  
-          const { setCurrentUser } = this.props;
+
           const signupData = {
-                FirstName: this.state.firstName,
-                LastName: this.state.lastName,
+                FullName: this.state.firstName+this.state.lastName,
                 Email    : this.state.email,
                 Password : this.state.password,
-  
+                Type: 'u'
           }
           
-          // try {
+          try {
   
-          //     const res = await req.user.signIn( signinData );
+              await req.user.signUp( signupData );
+              alert('successfully added');
   
-          //     axios.defaults.headers.common['Authorization'] = res.AccessToken;
-          //     setCurrentUser({ Type: res.Type });
               
-          // } 
-          // catch (error) {
+          } 
+          catch (error) {
   
-          //     this.setState ({ isPasswordError: true, helperText: 'password incorrect' });
   
-          // }
+          }
   
-          console.log(this.state)
       }
  
     render(){
