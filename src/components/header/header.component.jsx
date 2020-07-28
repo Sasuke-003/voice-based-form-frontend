@@ -23,10 +23,14 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
 
+
 import { makeStyles } from '@material-ui/core/styles';
 
 
 import { setCurrentUser } from '../../redux/user/user.actions'
+
+
+import { req } from '../../url/url'
 
 
 import './header.styles.css'
@@ -197,7 +201,7 @@ const Header = ( { currentUser, setCurrentUser, history } ) => {
 
               currentUser ?
 
-                  <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); Axios.post( '/user/logout' ) ; }}>
+                  <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); req.user.signOut(); }}>
                       LOG OUT
                   </Button>
 

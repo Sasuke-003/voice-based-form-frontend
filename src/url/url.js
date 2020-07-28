@@ -13,8 +13,9 @@ export const req = {
 
     user: {
 
-        signUp : async (data) => { return await axios.post( URL.signUp, data ) },
-        signIn : async (data) => { return await axios.post( URL.signIn, data ) },
+        signUp  : async (data) => { return await axios.post( URL.signUp, data ) },
+        signIn  : async (data) => { return await axios.post( URL.signIn, data ) },
+        signOut : async () => { return await await axios.get( URL.signOut ) }
 
     },
 
