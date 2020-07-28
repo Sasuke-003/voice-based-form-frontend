@@ -13,7 +13,7 @@ class CreateQuestionContainer extends Component {
 
     render() {
 
-        const { data, currentId, handleEdit } = this.props;
+        const { data, currentId, handleEdit, handleChange } = this.props;
 
         return (
 
@@ -23,11 +23,11 @@ class CreateQuestionContainer extends Component {
 
                     currentId === data.id ?
 
-                    <EditableQuestion qData={data} />
+                    <EditableQuestion data={data} handleChange={ handleChange } />
 
                     :
 
-                    <ViewQuestion  qData={data} />
+                    <ViewQuestion  data={data} />
 
                 }
 

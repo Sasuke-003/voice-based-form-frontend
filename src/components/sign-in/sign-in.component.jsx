@@ -97,24 +97,22 @@ class SignIn extends React.Component {
             Password : this.state.password,
 
         }
-
-        setCurrentUser({ Type: 'u' });
         
-        // try {
+        try {
 
-        //     const res = await req.user.signIn( signinData );
+            const res = await req.user.signIn( signinData );
 
-        //     axios.defaults.headers.common['Authorization'] = res.AccessToken;
+            axios.defaults.headers.common['Authorization'] = res.AccessToken;
+            setCurrentUser({ Type: res.Type });
             
-            
-        // } 
-        // catch (error) {
+        } 
+        catch (error) {
 
-        //   console.log(error)
+          console.log(error)
 
-        //     this.setState ({ isPasswordError: true, helperText: 'password incorrect' });
+            this.setState ({ isPasswordError: true, helperText: 'password incorrect' });
 
-        // }
+        }
 
     }
 
