@@ -11,6 +11,7 @@ const useStyles = makeStyles({
   root: {
     width: "770px",
     margin: "auto",
+    marginTop: '20px',
     paddingBottom: "64px",
   },
 });
@@ -19,7 +20,7 @@ const EditableQuestion = ({ data, handleChange }) => {
   const classes = useStyles();
   return (
     <section className="home-section">
-      <Card className={classes.root}>
+      <Card className={classes.root} raised >
         <CardContent></CardContent>
         <CardActions>
           <Button size="small">Learn More</Button>

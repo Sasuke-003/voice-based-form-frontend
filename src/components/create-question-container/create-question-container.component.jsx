@@ -21,7 +21,7 @@ class CreateQuestionContainer extends Component {
 
                 {
 
-                    currentId === data.id ?
+                    true ?
 
                     <EditableQuestion data={data} handleChange={ handleChange } />
 

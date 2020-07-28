@@ -37,9 +37,9 @@ class CreateForm extends Component {
 
         }, () => {
 
-            this.setState({
-                currentId: this.state.qData.lastItem.id,
-            })
+            // this.setState({
+            //     currentId: this.state.qData.lastItem.id,
+            // })
 
         });
 
@@ -91,7 +91,7 @@ class CreateForm extends Component {
                 ))
 
             }
-            <MyFloatingButton onClick={this.addItem} />
+            <MyFloatingButton onClick={this.addQuestion} />
                 
             </div>
 
