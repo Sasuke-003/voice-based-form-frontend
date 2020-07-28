@@ -16,6 +16,7 @@ const ViewQuestion = ({ data, handleChange }) => {
   const classes = useStyles();
   return (
   <div>
+  yo
   </div>
   );
 };
