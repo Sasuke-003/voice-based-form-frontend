@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 
+import MyFloatingButton from '../my-floating-button/my-floating-button';
+import CreateQuestionContainer from '../create-question-container/create-question-container.component'
+
 class CreateForm extends Component {
 
     constructor(props) {
@@ -8,7 +11,8 @@ class CreateForm extends Component {
         
         this.state = {
 
-            qData  : [],
+            qData     : [],
+            currentId : '',
 
         }
 
@@ -25,20 +29,38 @@ class CreateForm extends Component {
                             Question   : '',
                             AnswerType : '',
                             Answers    : [ ],
-                            id   : Date.now(),
+                            id         : Date.now(),
 
                         }
 
-                    ]
+                    ],
+
+        }, () => {
+
+            this.setState({
+                currentId: this.state.qData.lastItem.id,
+            })
 
         });
+
+        
+
+    }
+
+    handleEdit = ( id ) => {
+
+        this.setState({
+
+            currentId: id,
+
+        })
 
     }
     
 
     render() {
 
-        const { qData } = this.state;
+        const { qData, currentId } = this.state;
 
         return (
 
@@ -48,12 +70,12 @@ class CreateForm extends Component {
 
                 qData.map( ( data ) => (
 
-
+                    <CreateQuestionContainer qData={qData} currentId={currentId} handleEdit={this.handleEdit} />
 
                 ))
 
             }
-            
+            <MyFloatingButton onClick={this.addItem} />
                 
             </div>
 
