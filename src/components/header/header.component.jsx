@@ -1,5 +1,4 @@
 import React from 'react';
-import Axios from 'axios';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 
@@ -11,16 +10,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
-import AddBoxIcon from '@material-ui/icons/AddBox';
-import ReceiptIcon from '@material-ui/icons/Receipt';
+import HistoryIcon from '@material-ui/icons/History';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 import IconButton from '@material-ui/core/IconButton';
-import ShowChartIcon from '@material-ui/icons/ShowChart';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+
 
 
 
@@ -104,7 +100,7 @@ const Header = ( { currentUser, setCurrentUser, history } ) => {
           
             <ListItem button key={1} onClick={() => {history.push('/')}} >
             
-              <ListItemIcon> <ShoppingCartIcon /> </ListItemIcon>
+              <ListItemIcon> <PostAddIcon /> </ListItemIcon>
               <ListItemText primary='CREATE FORM' />
 
             </ListItem>
@@ -117,7 +113,7 @@ const Header = ( { currentUser, setCurrentUser, history } ) => {
 
             <ListItem button key={2} onClick={() => {history.push('/myforms')}} >
 
-              <ListItemIcon> <ShowChartIcon /> </ListItemIcon>
+              <ListItemIcon> <HistoryIcon /> </ListItemIcon>
               <ListItemText primary='MY FORMS' />
 
             </ListItem>
@@ -126,6 +122,8 @@ const Header = ( { currentUser, setCurrentUser, history } ) => {
         }
 
       </List>
+
+      <Divider />
 
     </div>
 

@@ -154,6 +154,20 @@ class CreateQuestionContainer extends Component {
       </div>
     );
   }
+
+  render() {
+    const { data, currentId, handleEdit, handleChange } = this.props;
+
+    return (
+      <div onClick={() => handleEdit(data.id)}>
+        {currentId === data.id ? (
+          <EditableQuestion data={data} handleChange={handleChange} />
+        ) : (
+          <ViewQuestion data={data} />
+        )}
+      </div>
+    );
+  }
 }
 
 export default CreateQuestionContainer;

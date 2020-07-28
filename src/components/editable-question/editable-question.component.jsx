@@ -9,7 +9,7 @@ import "./editable-question.styles.css";
 
 const useStyles = makeStyles({
   root: {
-    width: "770px",
+    width: "70%",
     margin: "auto",
     marginTop: "20px",
     paddingBottom: "64px",
