@@ -1,18 +1,17 @@
-const { user, auth } = require( './validator.config.js' ) ;
+const { user } = require( './validator.config.js' ) ;
 
 const validator = {
 
-    "/user/login"  : user.login,
-    "/user/logout" : user.logout,
-    "/user/signup" : user.signup,
-
-
-    "/auth/refresh-token" : auth.refreshToken,
-    "/auth/access-token"  : auth.accessToken,
+    "/user/sign-up" : user.signUp,
+    "/user/sign-in" : user.signIn,
     
     } ;
     
-    export const validate = async ( req ) => {
-        try           { await validator[ req.url ].validateAsync( req.data ) ; return req ; }
-        catch ( err ) { alert ( err.details[0].message ); throw err  ;       }
+export const validate = async ( req ) => {
+    try { 
+        if( req.method === 'post' ) await validator[ req.url ].validateAsync( req.data ) ; 
+        return req ;
+    } catch ( err ) { 
+        alert ( err.details[0].message ); throw err ; 
     }
+}

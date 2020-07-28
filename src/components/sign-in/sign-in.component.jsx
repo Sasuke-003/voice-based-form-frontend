@@ -100,7 +100,7 @@ class SignIn extends React.Component {
         
         // try {
 
-        //     const res = await req.user.login( signinData );
+        //     const res = await req.user.signIn( signinData );
 
         //     axios.defaults.headers.common['Authorization'] = res.AccessToken;
         //     setCurrentUser({ Type: res.Type });
