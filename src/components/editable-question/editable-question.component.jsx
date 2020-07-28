@@ -176,12 +176,12 @@ class EditableQuestion extends Component {
                 
                 :
 
-                data.Answers.map((ans)=> (
-                  <Grid item xs={4}>
+                data.Answers.map((ans, index)=> (
+                  <Grid item lg={4} xl={4} md={6}  xs={12} key={index}>
                   
                     <Card className={classes.optionCards}>
                       <PanoramaFishEyeIcon style={{ margin: "18px" }} />
-                      <p>option 1</p>
+                      <InputField />
                       <IconButton aria-label="delete" onClick={()=> deleteAnswer(data.id, ans.id)} >
                         <CloseIcon  />
                       </IconButton>
