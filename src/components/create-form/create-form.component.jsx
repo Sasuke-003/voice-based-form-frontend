@@ -37,15 +37,29 @@ class CreateForm extends Component {
 
         }, () => {
 
-            // this.setState({
-            //     currentId: this.state.qData.lastItem.id,
-            // })
+            this.setState({
+                currentId: this.state.qData[this.state.qData.length - 1].id,
+            });
 
         });
 
         
 
     }
+
+    deleteQuestion = ( id ) => {
+
+        this.setState( { qData: this.state.qData.filter( ( data ) => data.id !== id ), },
+        () => {
+
+            this.setState({
+                currentId: this.state.qData[this.state.qData.length - 1].id,
+            });
+
+        } );
+
+    }
+
 
     handleChange = ( event, id ) => {
 
@@ -61,7 +75,65 @@ class CreateForm extends Component {
 
         });
   
-      }
+    }
+
+    addAnswer = ( id ) => {
+
+
+        const elementsIndex = this.state.qData.findIndex(element => element.id === id )
+
+        let newArray = [...this.state.qData ]
+
+        newArray[elementsIndex].Answers.push({
+            value : '',
+            id    : Date.now(), 
+
+        })
+
+        this.setState({
+
+            qData: newArray,
+
+        })
+
+
+    }
+
+    deleteAnswer = ( qId, aId ) => {
+
+        this.setState({
+
+            qData: this.state.qData.map( ( data ) => {
+
+                if ( data.id !== qId ) return data;
+                return { ...data, Answers: this.state.qData.Answers.map( (ans) => ans.id !== aId )}
+
+            })
+
+        })
+
+    }
+
+
+    handleAnswerChange = ( event, qId, aId ) => {
+
+        const { value } = event.target;
+        this.setState({
+
+            qData: this.state.qData.map( ( data ) => {
+
+                if ( data.id !== qId ) return data;
+                return { ...data, Answers: this.state.qData.Answers.map( (ans) => {
+                    if (ans.id !== aId) return ans;
+                    return { ...ans, value: value }
+                }) }
+
+            })
+
+        })
+
+    }
+
 
     handleEdit = ( id ) => {
 
@@ -70,6 +142,13 @@ class CreateForm extends Component {
             currentId: id,
 
         })
+
+    }
+
+
+    componentDidMount() {
+
+        this.addQuestion();
 
     }
     
@@ -81,12 +160,15 @@ class CreateForm extends Component {
         return (
 
             <div>
+            {
+                console.log(this.state)
+            }
 
             {
 
                 qData.map( ( data ) => (
 
-                    <CreateQuestionContainer data={data} currentId={currentId} handleEdit={this.handleEdit} />
+                    <CreateQuestionContainer key={data.id} data={data} currentId={currentId} handleEdit={this.handleEdit} />
 
                 ))
 
