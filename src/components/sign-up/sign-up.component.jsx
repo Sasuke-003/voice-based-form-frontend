@@ -77,11 +77,20 @@ class SignUp extends React.Component {
   
               await req.user.signUp( signupData );
               alert('successfully added');
-  
+
+              this.setState( {
+
+                firstName : '',
+                lastName  : '',
+                email     : '',
+                password  : '',
+    
+            })
               
           } 
           catch (error) {
-  console.log(error)
+        
+            console.log(error)
   
           }
   

@@ -101,14 +101,16 @@ class CreateForm extends Component {
 
     deleteAnswer = ( qId, aId ) => {
 
+        const elementsIndex = this.state.qData.findIndex(element => element.id === qId )
+        let newArray = [...this.state.qData ]
+
+        const answerIndex = newArray[elementsIndex].Answers.findIndex(element => element.id === aId)
+
+        newArray[elementsIndex].Answers.splice(answerIndex, 1);
+
         this.setState({
 
-            qData: this.state.qData.map( ( data ) => {
-
-                if ( data.id !== qId ) return data;
-                return { ...data, Answers: this.state.qData.Answers.map( (ans) => ans.id !== aId )}
-
-            })
+            qData: newArray,
 
         })
 
@@ -118,30 +120,37 @@ class CreateForm extends Component {
     handleAnswerChange = ( event, qId, aId ) => {
 
         const { value } = event.target;
+
+        
+        const elementsIndex = this.state.qData.findIndex(element => element.id === qId )
+        let newArray = [...this.state.qData ]
+
+        const answerIndex = newArray[elementsIndex].Answers.findIndex(element => element.id === aId)
+
+        newArray[elementsIndex].Answers[answerIndex].value = value;
+
+
         this.setState({
 
-            qData: this.state.qData.map( ( data ) => {
-
-                if ( data.id !== qId ) return data;
-                return { ...data, Answers: this.state.qData.Answers.map( (ans) => {
-                    if (ans.id !== aId) return ans;
-                    return { ...ans, value: value }
-                }) }
-
-            })
+            qData: newArray,
 
         })
+
+
 
     }
 
 
     handleEdit = ( id ) => {
 
-        this.setState({
+        if (this.state.id !== id){
 
-            currentId: id,
+            this.setState({
 
-        })
+                currentId: id,
+
+            });
+        }
 
     }
 
@@ -160,15 +169,14 @@ class CreateForm extends Component {
         return (
 
             <div>
-            {
-                console.log(this.state)
-            }
 
             {
 
                 qData.map( ( data ) => (
 
-                    <CreateQuestionContainer key={data.id} data={data} currentId={currentId} handleEdit={this.handleEdit} />
+                    <CreateQuestionContainer key={data.id} data={data} currentId={currentId} handleEdit={this.handleEdit} 
+                    handleChange={this.handleChange} addAnswer={this.addAnswer} deleteAnswer={this.deleteAnswer} handleAnswerChange={this.handleAnswerChange}
+                    />
 
                 ))
 

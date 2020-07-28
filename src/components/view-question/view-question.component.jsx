@@ -9,36 +9,14 @@ import Button from "@material-ui/core/Button";
 import './view-question.styles.css'
 
 const useStyles = makeStyles({
-  root: {
-    width: "70%",
-    margin: "auto",
-    marginTop: '20px',
-    paddingBottom: "64px",
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
+ 
 });
 
 const ViewQuestion = ({ data, handleChange }) => {
   const classes = useStyles();
   return (
-    <section className="home-section">
-      <Card className={classes.root} raised >
-        <CardContent></CardContent>
-        <CardActions>
-          <Button size="small">give More</Button>
-        </CardActions>
-      </Card>
-    </section>
+  <div>
+  </div>
   );
 };
 
