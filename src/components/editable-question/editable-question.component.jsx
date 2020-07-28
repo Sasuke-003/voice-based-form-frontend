@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import "./editable-question.styles.css";
 
 const useStyles = makeStyles({
@@ -13,17 +12,6 @@ const useStyles = makeStyles({
     width: "770px",
     margin: "auto",
     paddingBottom: "64px",
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
   },
 });
 
