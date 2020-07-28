@@ -1,10 +1,14 @@
-const { user } = require( './validator.config.js' ) ;
+const { user, form } = require( './validator.config.js' ) ;
 
 const validator = {
 
     "/user/sign-up" : user.signUp,
     "/user/sign-in" : user.signIn,
     
+    "/form/template/new" : form.template.new,
+
+    "/form/ans/new"      : form.ans.new,
+
     } ;
     
 export const validate = async ( req ) => {
