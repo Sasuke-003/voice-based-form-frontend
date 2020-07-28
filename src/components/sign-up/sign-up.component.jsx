@@ -64,10 +64,13 @@ class SignUp extends React.Component {
           event.preventDefault();
 
           const signupData = {
-                FullName: this.state.firstName+this.state.lastName,
+                Name     : {
+                                F :this.state.firstName,
+                                L :this.state.lastName,
+                            },
                 Email    : this.state.email,
                 Password : this.state.password,
-                Type: 'u'
+                Type     : 'u'
           }
           
           try {

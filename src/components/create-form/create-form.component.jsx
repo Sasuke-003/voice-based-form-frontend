@@ -47,11 +47,21 @@ class CreateForm extends Component {
 
     }
 
-    handleChange = () => {
+    handleChange = ( event, id ) => {
 
-        
+        const { value, name } = event.target;
+        this.setState({
 
-    }
+            qData: this.state.qData.map( ( data ) => {
+
+                if ( data.id !== id ) return data;
+                return { ...data, [name]: value }
+
+            })
+
+        });
+  
+      }
 
     handleEdit = ( id ) => {
 

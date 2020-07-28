@@ -3,8 +3,11 @@ const Joi = require( '@hapi/joi' ) ;
 const userSchema = {
     email    : Joi.string().trim().min( 1 ).max( 50 ).required(),
     pass     : Joi.string().trim().min( 1 ).max( 50 ).required(),
-    fullName : Joi.string().trim().min( 1 ).max( 50 ).required(),
     type     : Joi.string().trim().min( 1 ).max( 1  ),
+    name     : Joi.object({
+        F : Joi.string().trim().min( 1 ).max( 50 ).required(),
+        L : Joi.string().trim().min( 1 ).max( 50 ).required(),
+    }).required(),
 } ;
 
 // ---------- Common Schema ---------- //
@@ -19,7 +22,7 @@ const commonSchema = {
 module.exports.user = {
     
     signUp : Joi.object({
-        FullName : userSchema.fullName,
+        Name     : userSchema.name,
         Email    : userSchema.email,
         Password : userSchema.pass,
         Type     : userSchema.type,
