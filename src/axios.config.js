@@ -23,6 +23,7 @@ axios.interceptors.response.use(
         return res.data.data ;
     },
     async err =>  {
+        console.log('gfgjfjg', err);
         console.warn( `Response Error : ${ err.config.ResID } : ${ err.config.url }` ) ; //-Dev
         console.log( err.response.data  ) ; //-Dev
         switch ( err.response.data.code ) {
@@ -53,7 +54,6 @@ const newAccessToken = async () => {
 const newAccessTokenAndRetry = async prevReq => {
     try {
         console.log( prevReq.headers )
-        console.log( prevReq.headers )
         prevReq.headers[ 'Authorization']  = await newAccessToken() ;
         return await axios.request( prevReq ) ;
     } catch ( err ) {
@@ -62,19 +62,18 @@ const newAccessTokenAndRetry = async prevReq => {
     }
 }
 
-
 // New Token On Refresh
-// axios.post( '/auth/refresh-token' )
-//     .then( res => { 
-//         console.log( 'Token Verified - Logging In User' ) ;
-//         axios.defaults.headers.common['Authorization'] = res.AccessToken ;
-//         // Code Redirecting To Home Page 
-//         // ..
-//     })
-//     .catch( err => {
-//         console.log( 'Token Error - Redirecting To Login Page' ) ;
-//         // Code to Log out 
-//         // ...
-//         store.dispatch(setCurrentUser(null));
-//                 axios.post( '/user/logout' ) ;
-//     }) ;
+axios.post( '/auth/refresh-token' )
+    .then( res => { 
+        console.log( 'Token Verified - Logging In User' ) ;
+        axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+        // Code Redirecting To Home Page 
+        // ..
+    })
+    .catch( err => {
+        console.log( 'Token Error - Redirecting To Login Page' ) ;
+        // Code to Log out 
+        // ...
+        store.dispatch(setCurrentUser(null));
+                axios.post( '/user/logout' ) ;
+    }) ;

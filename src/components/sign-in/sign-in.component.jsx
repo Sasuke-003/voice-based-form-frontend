@@ -68,8 +68,8 @@ class SignIn extends React.Component {
         
         this.state = {
 
-            email        : 'a',
-            password        : 'a',
+            email           : '',
+            password        : '',
             isPasswordError : false,
             helperText      : '',
 
