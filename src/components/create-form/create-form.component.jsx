@@ -7,8 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 
-
-const useStyles =({
+const useStyles = {
   root: {
     transition: "box-shadow 280ms",
     borderRadius: "8px",
@@ -29,221 +28,173 @@ const useStyles =({
     fontWeight: 400,
     lineHeight: "100%",
   },
- 
-});
+};
 
 class CreateForm extends Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-
-        qData     : [],
-        currentId : "",
-
+      qData: [],
+      currentId: "",
     };
-
   }
 
-
   addQuestion = () => {
-    this.setState({
+    this.setState(
+      {
         qData: [
-                  ...this.state.qData,
-                  {
-                    Question: "",
-                    AnswerType: "TxtFld",
-                    Answers: [],
-                    id: Date.now(),
-                  },
-              ],
-    },
-    () => {
-      this.setState({
-        currentId: this.state.qData[this.state.qData.length - 1].id,
-      });
-    });
+          ...this.state.qData,
+          {
+            Question: "",
+            AnswerType: "TxtFld",
+            Answers: [],
+            id: Date.now(),
+          },
+        ],
+      },
+      () => {
+        this.setState({
+          currentId: this.state.qData[this.state.qData.length - 1].id,
+        });
+      }
+    );
   };
-
 
   handleChange = (event, id) => {
     const { name, value } = event.target;
 
     this.setState({
+      qData: this.state.qData.map((c) => {
+        if (c.id !== id) return c;
+        return { ...c, [name]: value };
+      }),
+    });
+  };
 
-            qData: this.state.qData.map((c) => {
-
-                if (c.id !== id) return c;
-                return {...c, [name]: value }
-
-            })
-
-        });
-  }
-
-  
   deleteQuestion = (id) => {
-
     this.setState(
-      { 
-        qData: this.state.qData.filter((data) => data.id !== id) 
+      {
+        qData: this.state.qData.filter((data) => data.id !== id),
       },
       () => {
-        if(this.state.qData.length){
-        this.setState({
-          currentId: this.state.qData[this.state.qData.length - 1].id,
-        })
-      }});
+        if (this.state.qData.length) {
+          this.setState({
+            currentId: this.state.qData[this.state.qData.length - 1].id,
+          });
+        }
+      }
+    );
+  };
 
-  
-    }
+  addAnswer = (id) => {
+    const elementsIndex = this.state.qData.findIndex(
+      (element) => element.id === id
+    );
 
+    let newArray = [...this.state.qData];
 
-  addAnswer = ( id ) => {
+    newArray[elementsIndex].Answers.push({
+      value: "",
+      id: Date.now(),
+    });
 
+    this.setState({
+      qData: newArray,
+    });
+  };
 
-      const elementsIndex = this.state.qData.findIndex(element => element.id === id )
+  deleteAnswer = (qId, aId) => {
+    const elementsIndex = this.state.qData.findIndex(
+      (element) => element.id === qId
+    );
+    let newArray = [...this.state.qData];
 
-      let newArray = [...this.state.qData ]
+    const answerIndex = newArray[elementsIndex].Answers.findIndex(
+      (element) => element.id === aId
+    );
 
-      newArray[elementsIndex].Answers.push({
-          value : '',
-          id    : Date.now(), 
+    newArray[elementsIndex].Answers.splice(answerIndex, 1);
 
-      })
+    this.setState({
+      qData: newArray,
+    });
+  };
 
+  handleAnswerChange = (event, qId, aId) => {
+    const { value } = event.target;
+
+    const elementsIndex = this.state.qData.findIndex(
+      (element) => element.id === qId
+    );
+    let newArray = [...this.state.qData];
+
+    const answerIndex = newArray[elementsIndex].Answers.findIndex(
+      (element) => element.id === aId
+    );
+
+    newArray[elementsIndex].Answers[answerIndex].value = value;
+
+    this.setState({
+      qData: newArray,
+    });
+  };
+
+  handleEdit = (id) => {
+    if (this.state.id !== id) {
       this.setState({
+        currentId: id,
+      });
+    }
+  };
 
-          qData: newArray,
-
-      })
-
-
+  componentDidMount() {
+    this.addQuestion();
   }
 
-    deleteAnswer = ( qId, aId ) => {
+  render() {
+    const { qData, currentId } = this.state;
+    const { classes } = this.props;
 
-        const elementsIndex = this.state.qData.findIndex(element => element.id === qId )
-        let newArray = [...this.state.qData ]
+    return (
+      <div>
+        <div
+          style={{ margin: "auto", paddingBottom: "20px", maxWidth: "770px" }}
+        >
+          <Card className={classes.root}>
+            <CardContent>
+              <div>
+                <TextField
+                  className={classes.formTitle}
+                  placeholder="Untitled form"
+                />
 
-        const answerIndex = newArray[elementsIndex].Answers.findIndex(element => element.id === aId)
+                <TextField
+                  className={classes.formDesc}
+                  placeholder="Form description"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-        newArray[elementsIndex].Answers.splice(answerIndex, 1);
-
-        this.setState({
-
-            qData: newArray,
-
-        })
-
-    }
-
-
-    handleAnswerChange = ( event, qId, aId ) => {
-
-        const { value } = event.target;
-
-        
-        const elementsIndex = this.state.qData.findIndex(element => element.id === qId )
-        let newArray = [...this.state.qData ]
-
-        const answerIndex = newArray[elementsIndex].Answers.findIndex(element => element.id === aId)
-
-        newArray[elementsIndex].Answers[answerIndex].value = value;
-
-
-        this.setState({
-
-            qData: newArray,
-
-        })
-
-
-
-    }
-
-
-    handleEdit = ( id ) => {
-
-        if (this.state.id !== id){
-
-            this.setState({
-
-                currentId: id,
-
-            });
-        }
-
-    }
-
-
-    componentDidMount () {
-
-        this.addQuestion();
-
-    }  
-
-    render() {
-
-        const { qData, currentId } = this.state;
-        const { classes } = this.props
-
-        return (
-
-            <div>
-           
-              <Card className={classes.root}>
-
-                <CardContent>
-
-                  <div>
-
-                    <TextField
-                      className={classes.formTitle}
-                      placeholder="Untitled form"
-                    />
-
-                    <TextField
-                      className={classes.formDesc}
-                      placeholder="Form description"
-                    />
-
-                  </div>
-                  
-                </CardContent>
-
-              </Card>
-
-
-            {
-
-                qData.map( ( data ) => (
-
-                    <CreateQuestionContainer 
-                    key={data.id} 
-                    data={data} 
-                    currentId={currentId} 
-                    handleEdit={this.handleEdit} 
-                    handleChange={this.handleChange} 
-                    addAnswer={this.addAnswer} 
-                    deleteAnswer={this.deleteAnswer} 
-                    handleAnswerChange={this.handleAnswerChange}
-                    deleteQuestion={this.deleteQuestion}
-                    />
-
-                ))
-
-            }
-            <MyFloatingButton onClick={this.addQuestion} />
-                
-            </div>
-
-        );
-
-    }
-
-
+        {qData.map((data) => (
+          <CreateQuestionContainer
+            key={data.id}
+            data={data}
+            currentId={currentId}
+            handleEdit={this.handleEdit}
+            handleChange={this.handleChange}
+            addAnswer={this.addAnswer}
+            deleteAnswer={this.deleteAnswer}
+            handleAnswerChange={this.handleAnswerChange}
+            deleteQuestion={this.deleteQuestion}
+          />
+        ))}
+        <MyFloatingButton onClick={this.addQuestion} />
+      </div>
+    );
+  }
 }
 
 export default withStyles(useStyles)(CreateForm);
