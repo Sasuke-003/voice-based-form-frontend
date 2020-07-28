@@ -6,7 +6,7 @@ import CreateForm from '../../components/create-form/create-form.component'
 
 const CreateFormPage = () => {
     return (
-        <div >
+        <div className='container'>
             <CreateForm />
         </div>
     );
