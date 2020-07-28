@@ -13,21 +13,21 @@ class CreateQuestionContainer extends Component {
 
     render() {
 
-        const { qData, currentId, handleEdit } = this.props;
+        const { data, currentId, handleEdit } = this.props;
 
         return (
 
-            <div onClick={() => handleEdit( qData.id )} >
+            <div onClick={() => handleEdit( data.id )} >
 
                 {
 
-                    currentId === qData.id ?
+                    currentId === data.id ?
 
-                    <EditableQuestion qData={qData} />
+                    <EditableQuestion qData={data} />
 
                     :
 
-                    <ViewQuestion  qData={qData} />
+                    <ViewQuestion  qData={data} />
 
                 }
 
