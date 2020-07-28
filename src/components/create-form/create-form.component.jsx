@@ -47,6 +47,12 @@ class CreateForm extends Component {
 
     }
 
+    handleChange = () => {
+
+        
+
+    }
+
     handleEdit = ( id ) => {
 
         this.setState({
@@ -70,7 +76,7 @@ class CreateForm extends Component {
 
                 qData.map( ( data ) => (
 
-                    <CreateQuestionContainer qData={qData} currentId={currentId} handleEdit={this.handleEdit} />
+                    <CreateQuestionContainer data={data} currentId={currentId} handleEdit={this.handleEdit} />
 
                 ))
 
