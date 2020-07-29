@@ -53,7 +53,7 @@ class ResponseForm extends Component {
 
     const { match: { params } } = this.props;
 
-    const res = await req.form.detail(params.id);
+    const res = await req.form.detail({ FormTemplateID:params.id});
 
     this.setState({
         qData: res
