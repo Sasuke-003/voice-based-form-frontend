@@ -72,18 +72,18 @@ shouldComponentUpdate(nextProps, nextState){
                     {
                       data.Answers.map((option, index) => {
 
-                          if (data.AnswerType === 'ChkBox') {
+                          if (data.AnswerType === 'ChkBox' && option.value.trim() !== '') {
 
                           return( <FormControlLabel control={<Checkbox />} label={option.value} key={index} /> )
 
                           }
 
-                          else if (data.AnswerType === 'RadBtn') {
+                          else if (data.AnswerType === 'RadBtn' && option.value.trim() !== '') {
 
                             return( <FormControlLabel control={<Radio />} label={option.value} key={index} /> )
 
                           }
-                          else if  (data.AnswerType === 'DrpDwn'){
+                          else if  (data.AnswerType === 'DrpDwn' && option.value.trim() !== '' ){
 
                             return(
 

@@ -6,6 +6,13 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import InputField from '../input-field/inputfield.component'
 import { withStyles } from "@material-ui/core/styles";
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+
+import { req } from '../../url/url';
 
 const useStyles = {
   root: {
@@ -35,8 +42,11 @@ class CreateForm extends Component {
     super(props);
 
     this.state = {
+      Title: '',
+      Desc: '',
       qData: [],
       currentId: "",
+      popperStatus: false,
     };
   }
 
@@ -71,6 +81,15 @@ class CreateForm extends Component {
       }),
     });
   };
+
+  handleTitleChange = (event) => {
+
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    })
+
+  } 
 
   deleteQuestion = (id) => {
     this.setState(
@@ -148,12 +167,84 @@ class CreateForm extends Component {
     }
   };
 
+  handleClose = (event) => {
+
+    this.setState( { popperStatus: false } );
+
+  }
+
+  handleOpen = (event) => {
+
+    this.setState( { popperStatus: true } );
+
+  }
+
+  submitForm = async () => {
+
+
+    let formData = [];
+    const { qData, Title, Desc } = this.state;
+
+    for (let i=0; i<qData.length; i++){
+
+      let newAns = [];
+
+      for (let j=0; j<qData[i].Answers.length ; j++){
+        if(qData[i].Answers[j].value.trim() !== '' && qData[i].AnswerType !== 'TxtFld'){
+          newAns.push(qData[i].Answers[j].value)
+        }
+      }
+      if(qData[i].AnswerType !== 'TxtFld'){
+        formData.push({
+
+          Que: qData[i].Question,
+          Typ: qData[i].AnswerType,
+          Opt: newAns, 
+  
+        })
+      }
+        else {
+          formData.push({
+
+            Que: qData[i].Question,
+            Typ: qData[i].AnswerType, 
+    
+          })
+        }
+
+    }
+
+    const FinalFormData = {
+
+      Title : Title,
+      Desc  : Desc,
+      Data  : formData
+
+    }
+
+   await req.form.create( FinalFormData );
+
+   console.log(FinalFormData)
+
+   this.setState({Title: '',
+      Desc: '',
+      qData: [],
+      currentId: "",
+      popperStatus: false,})
+
+   alert("successfully created")
+
+
+    
+
+  }
+
   componentDidMount() {
     this.addQuestion();
   }
 
   render() {
-    const { qData, currentId } = this.state;
+    const { qData, currentId, popperStatus, Title, Desc } = this.state;
     const { classes } = this.props;
 
     return (
@@ -167,11 +258,17 @@ class CreateForm extends Component {
                 <InputField
                   className={classes.formTitle}
                   placeholder="Untitled form"
+                  value={Title}
+                  name='Title'
+                  onChange={this.handleTitleChange}
                 />
 
                 <InputField
                   className={classes.formDesc}
                   placeholder="Form description"
+                  value={Desc}
+                  name='Desc'
+                  onChange={this.handleTitleChange}
                 />
               </div>
             </CardContent>
@@ -189,9 +286,40 @@ class CreateForm extends Component {
             deleteAnswer={this.deleteAnswer}
             handleAnswerChange={this.handleAnswerChange}
             deleteQuestion={this.deleteQuestion}
+            handleTitleChange={this.handleTitleChange}
           />
         ))}
         <MyFloatingButton onClick={this.addQuestion} />
+        <MyFloatingButton onClick={this.handleOpen} done   />
+
+        <Dialog
+            open={popperStatus}
+            onClose={this.handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            fullWidth
+            maxWidth='md'
+        >
+            <DialogTitle id="alert-dialog-title">{"Confirm Items"}</DialogTitle>
+
+            <DialogContent>
+                Are you sure you want to create this form ? 
+            </DialogContent>
+            
+            <DialogActions>
+
+            <Button onClick={this.handleClose} color="primary">
+                Cancel
+            </Button>
+
+            <Button onClick={this.submitForm} color="primary" autoFocus >
+                Submit
+            </Button>
+
+            </DialogActions>
+
+        </Dialog>
+
       </div>
     );
   }
