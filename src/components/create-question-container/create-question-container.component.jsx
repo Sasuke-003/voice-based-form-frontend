@@ -27,11 +27,11 @@ class CreateQuestionContainer extends Component {
                 deleteAnswer={deleteAnswer} 
                 handleAnswerChange={handleAnswerChange}
                 deleteQuestion={deleteQuestion}
-               />
+              />
 
            : 
 
-            <ViewQuestion data={data} />
+            <ViewQuestion data={data} deleteAnswer />
           
           }
 

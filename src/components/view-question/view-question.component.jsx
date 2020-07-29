@@ -53,7 +53,10 @@ class ViewQuestion extends React.Component {
                       <InputField label={"Answer here"} disabled fullWidth />
                     ) : null}
                     {data.Answers.map((option, index) => {
-                      if (data.AnswerType === "ChkBox") {
+                      if (
+                        data.AnswerType === "ChkBox" &&
+                        option.value.trim() !== ""
+                      ) {
                         return (
                           <FormControlLabel
                             control={<Checkbox />}
@@ -61,7 +64,10 @@ class ViewQuestion extends React.Component {
                             key={index}
                           />
                         );
-                      } else if (data.AnswerType === "RadBtn") {
+                      } else if (
+                        data.AnswerType === "RadBtn" &&
+                        option.value.trim() !== ""
+                      ) {
                         return (
                           <FormControlLabel
                             control={<Radio />}
@@ -69,7 +75,10 @@ class ViewQuestion extends React.Component {
                             key={index}
                           />
                         );
-                      } else if (data.AnswerType === "DrpDwn") {
+                      } else if (
+                        data.AnswerType === "DrpDwn" &&
+                        option.value.trim() !== ""
+                      ) {
                         return (
                           <Typography variant="h6" key={index}>
                             {option.value}

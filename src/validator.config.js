@@ -11,6 +11,8 @@ const userSchema = {
 } ;
 
 const formSchema = {
+    title : Joi.string().trim().min( 1 ).max( 50 ).required(),
+    desc  : Joi.string().trim().min( 1 ).max( 50 ).required(),
     que : Joi.string().trim().min( 1 ).max( 50 ).required(),
     typ : Joi.string().trim().min( 1 ).max( 50 ).required(),
     opt : Joi.array().items( Joi.string().trim().min( 1 ).max( 50 ).required() ).min( 1 ).max( 50 ),
@@ -45,7 +47,9 @@ module.exports.form = {
 
     template : {
         new : Joi.object({
-            Data : Joi.array().items(
+            Title : formSchema.title,
+            Desc  : formSchema.desc, 
+            Data  : Joi.array().items(
                 Joi.object({
                     Que : formSchema.que,
                     Typ : formSchema.typ,

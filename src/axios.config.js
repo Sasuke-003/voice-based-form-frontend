@@ -71,4 +71,6 @@ axios.get( '/auth/refresh-token' )
     })
     .catch( err => {
         console.log( 'Token Error - Redirecting To Sign In Page' ) ;
+        store.dispatch(setCurrentUser(null));
+        axios.get( '/user/sign-out' ) ;
     }) ;
