@@ -7,7 +7,7 @@ export const URL = {
     signOut : '/user/sign-out',
 
     formCreate : '/form/template/new',
-    formDetail : '/form/template/detail'
+    formDetail : '/form/template/detail/'
 
 }
 
@@ -25,7 +25,7 @@ export const req = {
     form: {
 
         create : async ( data ) => { return await axios.post( URL.formCreate, data ) },
-        detail : async ( data ) => { return await axios.post( URL.formDetail, data ) }
+        detail : async ( data ) => { return await axios.post( URL.formDetail+data ) }
 
     },
     
