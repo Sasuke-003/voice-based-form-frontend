@@ -194,7 +194,7 @@ class CreateForm extends Component {
           newAns.push(qData[i].Answers[j].value)
         }
       }
-      if(qData[i].AnswerType !== 'TxtFld'){
+      if(qData[i].AnswerType !== 'TF'){
         formData.push({
 
           Que: qData[i].Question,

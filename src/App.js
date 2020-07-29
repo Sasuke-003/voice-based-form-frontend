@@ -31,7 +31,7 @@ class App extends React.Component {
 
           <Route exact path='/myforms' render={() => this.props.currentUser ? (<CreateFormPage />) : (<Redirect to='/signin' />) } /> 
           
-          <Route exact path='/forms/:id' render={() => this.props.currentUser ? (<ResponseForm />) : (<Redirect to='/signin' />) } /> 
+          <Route path='/forms/:id' component={ResponseForm} /> 
             
         </Switch>
       </div>

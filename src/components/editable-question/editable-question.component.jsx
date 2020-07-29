@@ -149,7 +149,7 @@ class EditableQuestion extends Component {
                 <Grid item xs={4}>
                 {
 
-                  data.AnswerType === 'TxtFld' ?
+                  data.AnswerType === 'TF' ?
 
                   null
                   
@@ -171,7 +171,7 @@ class EditableQuestion extends Component {
               
              
               {
-                data.AnswerType === 'TxtFld' ?
+                data.AnswerType === 'TF' ?
                 
                 <Grid item xs={12} lg={12} >
                   <InputField
@@ -188,7 +188,7 @@ class EditableQuestion extends Component {
                   
                     <Card className={classes.optionCards}>
                       {
-                        data.AnswerType === 'ChkBox' ?
+                        data.AnswerType === 'CB' ?
 
                         <CheckBoxOutlineBlankIcon  style={{ margin: "18px" }} />
 

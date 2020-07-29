@@ -25,7 +25,7 @@ export const req = {
     form: {
 
         create : async ( data ) => { return await axios.post( URL.formCreate, data ) },
-        detail : async ( data ) => { return await axios.post( URL.formDetail+data ) }
+        detail : async ( data ) => { console.log(URL.formDetail+data); return await axios.get( URL.formDetail+data ) }
 
     },
     

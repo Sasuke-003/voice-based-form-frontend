@@ -15,8 +15,9 @@ import MicIcon from "@material-ui/icons/Mic";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import RadioGroup from '@material-ui/core/RadioGroup';
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = {
+const useStyles = makeStyles((theme) => ({
   card: {
     textAlign: "left",
     marginTop: "2%",
@@ -29,7 +30,7 @@ const useStyles = {
     float: "right",
     fontSize: "40px",
   },
-};
+}));
 
 const ResponseFormCard = ({data}) => {
   const classes = useStyles();

@@ -13,9 +13,11 @@ import Dialog from "@material-ui/core/Dialog";
 import { withRouter } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
-import { req } from "../../url/url";
+import { req } from '../../url/url'
 
 import ResponseFormCard from "../response-form-card/response-form-card.component";
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const useStyles = {
   root: {
@@ -52,40 +54,24 @@ class ResponseForm extends Component {
   }
 
   componentDidMount = async () => {
-    const {
-      match: { params },
-    } = this.props;
+    const {match: { params }} = this.props;
 
-    try{
+    console.log(params.id);
 
-      const res = await req.form.detail({ FormTemplateID:params.id});
-      
-    this.setState(
-      {
-        formData: res,
-      },
-      () => {
-        console.log(this.state.qData);
-        this.setDataToState(res);
-      }
-    );
+    await delay(2000);
 
-    }catch(error){
+    const res =  await req.form.detail(params.id);
 
-console.log(error);
-
-      
-    }
+    this.setState({
+      formData: res
+    })
 
 
 
-  };
-
-
-  setDataToState = () => {
 
 
   }
+
 
   render() {
     const { formData, popperStatus } = this.state;
@@ -107,9 +93,13 @@ console.log(error);
           </Card>
         </div>
 
-        {formData.Data.map((data) => (
-            <ResponseFormCard  data={data}  />
-        ))}
+        {
+          formData.length !== 0 ?
+          formData.Data.map((data, index) => (
+            <ResponseFormCard  data={data} key={index} />
+        ))
+      :
+    null}
         <MyFloatingButton onClick={this.handleOpen} done />
 
         <Dialog

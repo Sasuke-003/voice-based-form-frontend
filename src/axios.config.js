@@ -66,6 +66,7 @@ axios.get( '/auth/refresh-token' )
     .then( res => { 
         console.log( 'Token Verified - Logging In User' ) ;
         axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+        store.dispatch(setCurrentUser({Type:'u'}));
         // Code Redirecting To Home Page 
         // ..
     })
