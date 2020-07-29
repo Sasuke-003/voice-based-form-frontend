@@ -4,7 +4,7 @@ import MyFloatingButton from "../my-floating-button/my-floating-button";
 import CreateQuestionContainer from "../create-question-container/create-question-container.component";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import TextField from "@material-ui/core/TextField";
+import InputField from '../input-field/inputfield.component'
 import { withStyles } from "@material-ui/core/styles";
 
 const useStyles = {
@@ -164,12 +164,12 @@ class CreateForm extends Component {
           <Card className={classes.root}>
             <CardContent>
               <div>
-                <TextField
+                <InputField
                   className={classes.formTitle}
                   placeholder="Untitled form"
                 />
 
-                <TextField
+                <InputField
                   className={classes.formDesc}
                   placeholder="Form description"
                 />

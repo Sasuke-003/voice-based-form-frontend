@@ -22,6 +22,7 @@ import './editable-question.styles.css'
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 
 
@@ -86,7 +87,7 @@ class EditableQuestion extends Component {
         <div className="card-wrapper" >
 
           {/* question  */}
-          <Card className={classes.root}>
+          <Card className={classes.root} raised >
             <CardContent>
 
               <Grid container component='div' spacing={1} >
@@ -171,17 +172,37 @@ class EditableQuestion extends Component {
              
               {
                 data.AnswerType === 'TxtFld' ?
-
-                null
                 
+                <Grid item xs={12} lg={12} >
+                  <InputField
+                  label={'Answer here'}
+                  disabled
+                  fullWidth
+                  />
+                </Grid>
+
                 :
 
                 data.Answers.map((ans, index)=> (
                   <Grid item lg={4} xl={4} md={6}  xs={12} key={index}>
                   
                     <Card className={classes.optionCards}>
-                      <PanoramaFishEyeIcon style={{ margin: "18px" }} />
-                      <InputField />
+                      {
+                        data.AnswerType === 'ChkBox' ?
+
+                        <CheckBoxOutlineBlankIcon  style={{ margin: "18px" }} />
+
+                        :
+
+                        <PanoramaFishEyeIcon style={{ margin: "18px" }} />
+
+                      }
+                        
+                      <InputField 
+                        type='text'
+                        value={ans.value}
+                        onChange={(event)=>handleAnswerChange(event,data.id,ans.id)}
+                      />
                       <IconButton aria-label="delete" onClick={()=> deleteAnswer(data.id, ans.id)} >
                         <CloseIcon  />
                       </IconButton>
