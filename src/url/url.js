@@ -7,7 +7,7 @@ export const URL = {
     signOut : '/user/sign-out',
 
     formCreate : '/form/template/new',
-    formDetail : '?FormTemplateID='
+    formDetail : '/form/template/detail?FormTemplateID='
 
 }
 
