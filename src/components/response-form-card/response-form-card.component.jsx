@@ -12,6 +12,9 @@ import VolumeUpIcon from "@material-ui/icons/VolumeUp";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import MicIcon from "@material-ui/icons/Mic";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import RadioGroup from '@material-ui/core/RadioGroup';
 
 const useStyles = {
   card: {
@@ -28,8 +31,7 @@ const useStyles = {
   },
 };
 
-const ResponseFormCard = () => {
-  const { data } = this.props;
+const ResponseFormCard = ({data}) => {
   const classes = useStyles();
 
   return (
@@ -39,53 +41,61 @@ const ResponseFormCard = () => {
           <CardContent>
             <div className="question">
               <Typography variant="h5" gutterBottom>
-                {data.Question === ""
-                  ? "Please write a question here..."
-                  : data.Question}
+                {data.Que}
               </Typography>
             </div>
             <div>
-              <FormControl component="fieldset">
-                <FormGroup>
-                  {data.AnswerType === "TxtFld" ? (
-                    <InputField label={"Answer here"} disabled fullWidth />
-                  ) : null}
-                  {data.Answers.map((option, index) => {
-                    if (
-                      data.AnswerType === "ChkBox" &&
-                      option.value.trim() !== ""
-                    ) {
-                      return (
-                        <FormControlLabel
-                          control={<Checkbox />}
-                          label={option.value}
-                          key={index}
-                        />
-                      );
-                    } else if (
-                      data.AnswerType === "RadBtn" &&
-                      option.value.trim() !== ""
-                    ) {
-                      return (
-                        <FormControlLabel
-                          control={<Radio />}
-                          label={option.value}
-                          key={index}
-                        />
-                      );
-                    } else if (
-                      data.AnswerType === "DrpDwn" &&
-                      option.value.trim() !== ""
-                    ) {
-                      return (
-                        <Typography variant="h6" key={index}>
-                          {option.value}
-                        </Typography>
-                      );
-                    } else return null;
-                  })}
-                </FormGroup>
-              </FormControl>
+            
+                  {
+
+                    
+                    data.Typ === "TF" ? 
+                      (<InputField label={"Answer here"} fullWidth />) 
+                    : 
+                    data.Typ === 'RB' ?
+                    (
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="gender" name="gender1" >
+                          {
+                            data.Opt.map( (option, index) => (
+                              <FormControlLabel value={option} control={<Radio />} label={option}  key={index} />
+                            ) )   
+                          }                                             
+                        </RadioGroup>
+                      </FormControl>
+                      )
+                    :
+                    data.Typ === 'DD' ?
+                    (
+                      <FormControl className='formControl' fullWidth >
+                        <Select
+                              name='select'
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                          >
+                          {
+                            data.Opt.map( (option, index) => (
+                              <MenuItem value={option} key={index} > 
+                                {option}
+                              </MenuItem>
+                            ) )   
+                          }   
+                        </Select>
+                      </FormControl>
+                    )
+                    :
+                    (
+                      <FormControl component="fieldset" >
+                        <FormGroup>
+                          {
+                            data.Opt.map( (option, index) => (
+                              <FormControlLabel control={<Checkbox  name={option} />} label={option} key={index} />
+                            ) )   
+                          }   
+                        </FormGroup>
+                      </FormControl>
+                    )                
+                }   
             </div>
             <Tooltip title="Listen..">
               <IconButton className={classes.volumeUpIcon} onClick={null}>

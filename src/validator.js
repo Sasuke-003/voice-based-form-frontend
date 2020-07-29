@@ -9,6 +9,8 @@ const validator = {
 
     "/form/ans/new"      : form.ans.new,
 
+    "form/template/detail" : form.template.detail,
+
     } ;
     
 export const validate = async ( req ) => {

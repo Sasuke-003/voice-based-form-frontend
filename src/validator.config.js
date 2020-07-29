@@ -57,6 +57,10 @@ module.exports.form = {
                 })
             ).min(1).required(),
         }),
+
+        detail : Joi.object({
+            FormTemplateID : commonSchema._id
+        })
     
     },
 

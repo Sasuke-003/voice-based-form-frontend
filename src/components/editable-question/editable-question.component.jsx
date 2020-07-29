@@ -119,23 +119,23 @@ class EditableQuestion extends Component {
                         onChange={(event) => handleChange( event, data.id )}
                     >
 
-                    <MenuItem value={'RadBtn'}> 
+                    <MenuItem value={'RB'}> 
                       <RadioButtonCheckedIcon style={{ marginRight: "8px" }} />
                         Multiple choice
                     </MenuItem>
 
-                    <MenuItem value={'ChkBox'}>
+                    <MenuItem value={'CB'}>
                     <CheckBoxOutlinedIcon style={{ marginRight: "8px" }} />
                     Checkboxes
                     </MenuItem>
 
-                    <MenuItem value={'DrpDwn'}>
+                    <MenuItem value={'DD'}>
                     <ArrowDropDownCircleIcon style={{ marginRight: "8px" }} />
                     Drop-down
                     </MenuItem>
 
                     
-                    <MenuItem value={'TxtFld'}>
+                    <MenuItem value={'TF'}>
                       TextField
                     </MenuItem>
 

@@ -49,12 +49,12 @@ class ViewQuestion extends React.Component {
               <div>
                 <FormControl component="fieldset">
                   <FormGroup>
-                    {data.AnswerType === "TxtFld" ? (
+                    {data.AnswerType === "TF" ? (
                       <InputField label={"Answer here"} disabled fullWidth />
                     ) : null}
                     {data.Answers.map((option, index) => {
                       if (
-                        data.AnswerType === "ChkBox" &&
+                        data.AnswerType === "CB" &&
                         option.value.trim() !== ""
                       ) {
                         return (
@@ -65,7 +65,7 @@ class ViewQuestion extends React.Component {
                           />
                         );
                       } else if (
-                        data.AnswerType === "RadBtn" &&
+                        data.AnswerType === "RB" &&
                         option.value.trim() !== ""
                       ) {
                         return (
@@ -76,7 +76,7 @@ class ViewQuestion extends React.Component {
                           />
                         );
                       } else if (
-                        data.AnswerType === "DrpDwn" &&
+                        data.AnswerType === "DD" &&
                         option.value.trim() !== ""
                       ) {
                         return (

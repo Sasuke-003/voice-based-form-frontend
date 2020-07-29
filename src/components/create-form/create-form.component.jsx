@@ -57,7 +57,7 @@ class CreateForm extends Component {
           ...this.state.qData,
           {
             Question: "",
-            AnswerType: "TxtFld",
+            AnswerType: "TF",
             Answers: [],
             id: Date.now(),
           },

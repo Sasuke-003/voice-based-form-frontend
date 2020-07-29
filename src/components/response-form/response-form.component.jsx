@@ -11,6 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { withRouter } from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
 
 import { req } from "../../url/url";
 
@@ -44,8 +45,9 @@ class ResponseForm extends Component {
     super(props);
 
     this.state = {
-      qData: [],
+      formData: [],
       popperStatus: false,
+      ansData: [],
     };
   }
 
@@ -54,20 +56,39 @@ class ResponseForm extends Component {
       match: { params },
     } = this.props;
 
-    const res = await req.form.detail({ FormTemplateID:params.id});
+    try{
 
+      const res = await req.form.detail({ FormTemplateID:params.id});
+      
     this.setState(
       {
-        qData: res,
+        formData: res,
       },
       () => {
         console.log(this.state.qData);
+        this.setDataToState(res);
       }
     );
+
+    }catch(error){
+
+console.log(error);
+
+      
+    }
+
+
+
   };
 
+
+  setDataToState = () => {
+
+
+  }
+
   render() {
-    const { qData, popperStatus } = this.state;
+    const { formData, popperStatus } = this.state;
     const { classes } = this.props;
 
     return (
@@ -78,23 +99,17 @@ class ResponseForm extends Component {
           <Card className={classes.root}>
             <CardContent>
               <div>
-                <InputField
-                  className={classes.formTitle}
-                  placeholder="Untitled form"
-                />
+              <Typography variant="h5" className={classes.formTitle} >{formData.Title}</Typography>
 
-                <InputField
-                  className={classes.formDesc}
-                  placeholder="Form description"
-                />
+               <Typography variant='h5'  className={classes.formDesc} >{formData.Desc}</Typography>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/*qData.map((data) => (
-            <ResponseFormCard />
-        ))*/}
+        {formData.Data.map((data) => (
+            <ResponseFormCard  data={data}  />
+        ))}
         <MyFloatingButton onClick={this.handleOpen} done />
 
         <Dialog

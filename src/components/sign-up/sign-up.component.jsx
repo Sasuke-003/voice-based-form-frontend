@@ -86,6 +86,7 @@ class SignUp extends React.Component {
                 password  : '',
     
             })
+
               
           } 
           catch (error) {
