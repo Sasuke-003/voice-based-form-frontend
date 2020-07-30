@@ -23,7 +23,8 @@ import FormControl from "@material-ui/core/FormControl";
 const useStyles = ({
   card: {
     textAlign: "left",
-    marginTop: "2%",
+    marginBottom: "2%",
+    borderRadius: '8px'
   },
   volumeUpIcon: {
     float: "right",
@@ -35,6 +36,8 @@ const useStyles = ({
   },
 });
 
+
+
 class ResponseFormCard  extends React.Component  {
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -44,12 +47,17 @@ class ResponseFormCard  extends React.Component  {
     return true;
   }
 
+  handleTextToSpeech = async () => {
+     global.toSpeech(this.props.data.Que);
+  }
+
 render(){
   
 
-  const {data, index, handleChange, ansData, handleCheckBoxChange, classes } = this.props
+  const {data, index, handleChange, ansData, handleCheckBoxChange, handleSpeechToText , micStatus , classes } = this.props
 
   let ans = ansData[index];
+  let mstat = micStatus[index]
   return (
     <div>
     {console.log('yo')}
@@ -59,7 +67,9 @@ render(){
             <div className="question">
               <Typography variant="h5" gutterBottom>
                 {data.Que}
+              
               </Typography>
+            
             </div>
             <div>
             
@@ -67,7 +77,7 @@ render(){
 
                     
                     data.Typ === "TF" ? 
-                      (<InputField label={"Answer here"} fullWidth value={typeof ans === 'string' ? ans : '' } onChange={(event)=> handleChange(event, index)} />) 
+                      (<InputField type='text' label={"Answer here"} fullWidth value={typeof ans === 'string' ? ans : '' } onChange={(event)=> handleChange(event, index)} />) 
                     : 
                     data.Typ === 'RB' ?
                     (
@@ -109,12 +119,12 @@ render(){
                 }   
             </div>
             <Tooltip title="Listen..">
-              <IconButton className={classes.volumeUpIcon} onClick={null}>
+              <IconButton className={classes.volumeUpIcon} onClick={this.handleTextToSpeech}>
                 <VolumeUpIcon className={classes.volumeUpIcon}></VolumeUpIcon>
               </IconButton>
             </Tooltip>
             <Tooltip title="Speak">
-              <IconButton className={classes.micIcon} onClick={null}>
+              <IconButton className={classes.micIcon} onClick={()=> handleSpeechToText(index)} disabled={mstat} >
                 <MicIcon className={classes.micIcon}></MicIcon>
               </IconButton>
             </Tooltip>

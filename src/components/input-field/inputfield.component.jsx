@@ -47,7 +47,7 @@ class  InputField extends React.Component {
                     console.log("yo")
                 }
                         
-                    <TextField autoComplete={'off'} value={value} {...otherProps}  />
+                    <TextField autoComplete={'off'} value={value} {...otherProps}  x-webkit-speech='true' />
                             
                 </div>
 

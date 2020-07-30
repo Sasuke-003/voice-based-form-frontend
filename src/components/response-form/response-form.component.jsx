@@ -12,12 +12,19 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { withRouter } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { req } from '../../url/url'
 
 import ResponseFormCard from "../response-form-card/response-form-card.component";
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
+
+const SpeechRecognition = window.SpeechRecognition ||  window.webkitSpeechRecognition;
+
+const recognition  = new SpeechRecognition();
+
+
 
 const useStyles = {
   root: {
@@ -27,6 +34,7 @@ const useStyles = {
     flexDirection: "column",
     position: "relative",
     marginTop: "2%",
+    backgroundColor: '#F0EBF8',
   },
   formTitle: {
     width: "100%",
@@ -40,6 +48,9 @@ const useStyles = {
     fontWeight: 400,
     lineHeight: "100%",
   },
+  cir: {
+    marginTop: '40%'
+  },
 };
 
 class ResponseForm extends Component {
@@ -50,6 +61,7 @@ class ResponseForm extends Component {
       formData: [],
       popperStatus: false,
       ansData: [],
+      micStatus: [],
     };
   }
 
@@ -83,6 +95,7 @@ class ResponseForm extends Component {
   setDataToState = (data) => {
 
     let newData = [];
+    let newMicData = [];
 
     for(let i=0; i<data.length; i++){
 
@@ -103,10 +116,13 @@ class ResponseForm extends Component {
         newData.push('')
       }
 
+      newMicData.push(false)
+
     }
 
     this.setState({
-      ansData: newData
+      ansData: newData,
+      micStatus: newMicData,
     })
 
   }
@@ -190,31 +206,107 @@ class ResponseForm extends Component {
 
   }
 
+  handleSpeechToText = (index) => {
+        const { formData } = this.state;
+        recognition.start();
+        recognition.onresult = (e) => {
+        let current = e.resultIndex;
+        let transcript = e.results[current][0].transcript;
+
+
+        console.log(transcript)
+
+        if(formData.Data[index].Typ === 'CB'){
+
+          let newData = this.state.ansData;
+          let i = this.state.formData.Data[index].Opt.indexOf(transcript)
+          console.log(i);
+          if(i !== -1  ){
+            console.log(newData[index])
+            newData[index][i] = !newData[index][i]
+            this.setState({
+              ansData: newData
+            })
+            global.toSpeech("option set");
+          }
+          else{
+            global.toSpeech(transcript+" is not in the options");
+          }      
+          
+
+
+        }
+        else if(formData.Data[index].Typ === 'TF') {
+          this.setState({
+            ansData: this.state.ansData.map((c, i) => {
+              if (index !== i) return c;
+              return transcript;
+            })
+          })
+        }
+        else {
+
+          let i = this.state.formData.Data[index].Opt.indexOf(transcript)      
+          if(i !== -1  ){
+            this.setState({
+              ansData: this.state.ansData.map((c, i) => {
+                if (index !== i) return c;
+                return transcript;
+              })
+            })
+            global.toSpeech("option set");
+          }
+          else{
+            global.toSpeech(transcript+" is not in the options");
+          }  
+
+        }
+      }
+
+  
+    recognition.onspeechend = () => {
+
+      recognition.stop();
+      console.log('voice stopped')
+
+    }
+
+
+  }
+
 
   render() {
-    const { formData, popperStatus, ansData } = this.state;
+    const { formData, popperStatus, ansData, micStatus } = this.state;
     const { classes } = this.props;
 
     return (
       <div>
+        {
+          formData.length === 0 ?
+          <CircularProgress className={classes.cir}  />
+          :
+          null
+
+        }
+
+
+
         <div
-          style={{ margin: "auto", paddingBottom: "20px", maxWidth: "770px" }}
+          style={{ marginTop: "20px", paddingBottom: "20px", maxWidth: "770px" }}
         >
-          <Card className={classes.root}>
-            <CardContent>
+         
               <div>
               <Typography variant="h5" className={classes.formTitle} >{formData.Title}</Typography>
 
                <Typography variant='h5'  className={classes.formDesc} >{formData.Desc}</Typography>
               </div>
-            </CardContent>
-          </Card>
+           
         </div>
 
         {
           formData.length !== 0 ?
           formData.Data.map((data, index) => (
-            <ResponseFormCard  data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
+            <ResponseFormCard micStatus={micStatus} handleSpeechToText={this.handleSpeechToText} data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
         ))
       :
     null}
