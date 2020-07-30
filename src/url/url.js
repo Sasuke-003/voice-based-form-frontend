@@ -30,5 +30,7 @@ export const req = {
         answer : async ( data ) => { return await axios.post( URL.formAnswer, data ) },
 
     },
+
+}
     
 
