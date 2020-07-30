@@ -16,7 +16,7 @@ const formSchema = {
     que : Joi.string().trim().min( 1 ).max( 50 ).required(),
     typ : Joi.string().trim().min( 1 ).max( 50 ).required(),
     opt : Joi.array().items( Joi.string().trim().min( 1 ).max( 50 ).required() ).min( 1 ).max( 50 ),
-    ans : Joi.array().items( Joi.string().trim().min( 1 ).max( 50 ).required() ).min( 1 ).max( 50 ).required(),
+    ans : Joi.array().min( 1 ).max( 50 ).required(),
 }
 // ---------- Common Schema ---------- //
 const commonSchema = {

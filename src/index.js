@@ -10,6 +10,7 @@ import { store, persistor } from './redux/store'
 
 
 import App from './App';
+import './speech.config'
 import './validator.js'
 import './axios.config.js' 
 

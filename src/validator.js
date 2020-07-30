@@ -17,6 +17,11 @@ export const validate = async ( req ) => {
         if( req.method === 'post' ) await validator[ req.url ].validateAsync( req.data ) ; 
         return req ;
     } catch ( err ) { 
-        alert ( err.details[0].message ); throw err ; 
+        // This structure is followed to match the actual response error structure
+        const reqErr = {
+            config : { ResID:req.ResID, url:req.url },
+            response : { data:{ info:err.details[0].message ,code:9} }
+        }
+        throw reqErr;
     }
 }
