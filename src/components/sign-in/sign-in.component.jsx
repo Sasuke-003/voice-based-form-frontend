@@ -101,6 +101,7 @@ class SignIn extends React.Component {
         try {
 
             const res = await req.user.signIn( signinData );
+            global.toSpeech( "Hi, " + res.Name.F + ' ' +res.Name.L + "\nWelcome to v form" );
             setCurrentUser({ Type: res.Type });
             
         } 
