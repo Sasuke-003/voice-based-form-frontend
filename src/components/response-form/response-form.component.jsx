@@ -56,25 +56,143 @@ class ResponseForm extends Component {
   componentDidMount = async () => {
     const {match: { params }} = this.props;
 
-    console.log(params.id);
-
     await delay(2000);
 
     const res =  await req.form.detail(params.id);
 
     this.setState({
       formData: res
+    }, () => {
+      this.setDataToState(res.Data);
     })
 
+  }
 
+  handleClose = (event) => {
 
+    this.setState( { popperStatus: false } );
+
+  }
+
+  handleOpen = (event) => {
+
+    this.setState( { popperStatus: true } );
+
+  }
+
+  setDataToState = (data) => {
+
+    let newData = [];
+
+    for(let i=0; i<data.length; i++){
+
+      if(data[i].Typ === 'CB'){
+        let op = [];
+
+        for(let j=0; j<data[i].Opt.length ; j++){
+            op.push(false);
+        }
+
+        newData.push(op);
+
+      }
+      else if(data[i].Typ === 'DD' && data[i].Opt.length !== 0 ){
+        newData.push(data[i].Opt[0])
+      }
+      else {
+        newData.push('')
+      }
+
+    }
+
+    this.setState({
+      ansData: newData
+    })
+
+  }
+
+  handleChange = (event, index) => {
+
+    const { value } = event.target;
+
+    this.setState({
+      ansData: this.state.ansData.map((c, i) => {
+        if (index !== i) return c;
+        return value;
+      })
+    })
+
+   
+
+  }
+
+  handleCheckBoxChange = (event, index, ai) => {
+
+    const { checked } = event.target;
+
+    let newData = this.state.ansData;
+    newData[index][ai] = checked;
+
+    this.setState({
+      ansData: newData
+    })
+
+  }
+
+  submitForm = async () => {
+
+    let newData = [];
+
+    const { formData, ansData } =this.state;  
+
+    for(let i=0; i<ansData.length;i++){
+      if(formData.Data[i].Typ === 'CB' ){
+        let op= [];
+        for(let j=0;j<ansData[i].length;j++){
+          if(ansData[i][j] === true){
+            op.push(j);
+          }
+        }
+        newData.push(op);
+      }
+      else if(formData.Data[i].Typ === 'TF' ){
+        newData.push(ansData[i]);
+      }
+      else{
+        for(let k=0;k<formData.Data[i].Opt.length; k++ ){
+          if(ansData[i]=== formData.Data[i].Opt[k]){
+            newData.push(k);
+          }
+        }
+      }
+    }
+
+    try {
+
+      const {match: { params }} = this.props;
+      const formSubmitData = {
+        FormTemplateID: params.id,
+        Data: newData
+
+      }
+
+      await req.form.answer( formSubmitData );
+
+      alert("successfully submitted")
+
+    }catch(error){
+
+      console.log(error)
+
+    }
+    
 
 
   }
 
 
   render() {
-    const { formData, popperStatus } = this.state;
+    const { formData, popperStatus, ansData } = this.state;
     const { classes } = this.props;
 
     return (
@@ -96,7 +214,7 @@ class ResponseForm extends Component {
         {
           formData.length !== 0 ?
           formData.Data.map((data, index) => (
-            <ResponseFormCard  data={data} key={index} />
+            <ResponseFormCard  data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
         ))
       :
     null}

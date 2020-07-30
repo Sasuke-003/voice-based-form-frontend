@@ -3,10 +3,10 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import FormGroup from "@material-ui/core/FormGroup";
 import InputField from "../input-field/inputfield.component";
-import FormControl from "@material-ui/core/FormControl";
+
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
+
 import Typography from "@material-ui/core/Typography";
 import VolumeUpIcon from "@material-ui/icons/VolumeUp";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,9 +15,12 @@ import MicIcon from "@material-ui/icons/Mic";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import shallowCompare from "react-addons-shallow-compare";
+import RadioAns from '../radio-ans/radio-ans.component'
+import FormControl from "@material-ui/core/FormControl";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = ({
   card: {
     textAlign: "left",
     marginTop: "2%",
@@ -30,13 +33,26 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
     fontSize: "40px",
   },
-}));
+});
 
-const ResponseFormCard = ({data}) => {
-  const classes = useStyles();
+class ResponseFormCard  extends React.Component  {
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.data === this.props.data && nextProps.ansData[nextProps.index] === this.props.ansData[this.props.index] && !Array.isArray(nextProps.ansData[nextProps.index]) ){
+      return false;
+    }
+    return true;
+  }
+
+render(){
+  
+
+  const {data, index, handleChange, ansData, handleCheckBoxChange, classes } = this.props
+
+  let ans = ansData[index];
   return (
     <div>
+    {console.log('yo')}
       <div className="card-wrapper">
         <Card className={classes.card}>
           <CardContent>
@@ -51,19 +67,11 @@ const ResponseFormCard = ({data}) => {
 
                     
                     data.Typ === "TF" ? 
-                      (<InputField label={"Answer here"} fullWidth />) 
+                      (<InputField label={"Answer here"} fullWidth value={typeof ans === 'string' ? ans : '' } onChange={(event)=> handleChange(event, index)} />) 
                     : 
                     data.Typ === 'RB' ?
                     (
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="gender" name="gender1" >
-                          {
-                            data.Opt.map( (option, index) => (
-                              <FormControlLabel value={option} control={<Radio />} label={option}  key={index} />
-                            ) )   
-                          }                                             
-                        </RadioGroup>
-                      </FormControl>
+                      <RadioAns data={data} ans={ans} handleChange={handleChange} index={index} />
                       )
                     :
                     data.Typ === 'DD' ?
@@ -73,10 +81,12 @@ const ResponseFormCard = ({data}) => {
                               name='select'
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
+                              value={typeof ans === 'string' ? ans : '' }
+                              onChange={(event)=> handleChange(event, index)}
                           >
                           {
-                            data.Opt.map( (option, index) => (
-                              <MenuItem value={option} key={index} > 
+                            data.Opt.map( (option, i) => (
+                              <MenuItem value={option} key={i} > 
                                 {option}
                               </MenuItem>
                             ) )   
@@ -89,8 +99,8 @@ const ResponseFormCard = ({data}) => {
                       <FormControl component="fieldset" >
                         <FormGroup>
                           {
-                            data.Opt.map( (option, index) => (
-                              <FormControlLabel control={<Checkbox  name={option} />} label={option} key={index} />
+                            data.Opt.map( (option, i) => (
+                              <FormControlLabel control={<Checkbox checked={Array.isArray(ans) ? ans[i] : false} name={option} onChange={(event)=> handleCheckBoxChange(event, index, i)} />} label={option} key={i} />
                             ) )   
                           }   
                         </FormGroup>
@@ -113,6 +123,7 @@ const ResponseFormCard = ({data}) => {
       </div>
     </div>
   );
+}
 };
 
-export default ResponseFormCard;
+export default withStyles(useStyles)(ResponseFormCard);
