@@ -209,25 +209,42 @@ class ResponseForm extends Component {
   handleSpeechToText = (index) => {
         const { formData } = this.state;
         recognition.start();
+
+      recognition.onstart = () => {
+
+        this.setState({
+          micStatus: this.state.micStatus.map((c) => {
+            return true;
+          })
+        })
+
+      }
+
+
         recognition.onresult = (e) => {
-        let current = e.resultIndex;
-        let transcript = e.results[current][0].transcript;
+          let current = e.resultIndex;
+          let transcript = e.results[current][0].transcript;
 
+          console.log(transcript)
 
-        console.log(transcript)
+          if(formData.Data[index].Typ === 'CB'){
 
-        if(formData.Data[index].Typ === 'CB'){
+            let newData = this.state.ansData;
+            let i = this.state.formData.Data[index].Opt.indexOf(transcript)
 
-          let newData = this.state.ansData;
-          let i = this.state.formData.Data[index].Opt.indexOf(transcript)
-          console.log(i);
           if(i !== -1  ){
             console.log(newData[index])
             newData[index][i] = !newData[index][i]
             this.setState({
               ansData: newData
             })
-            global.toSpeech("option set");
+            if(newData[index][i]){
+              global.toSpeech(transcript+"is selected");
+            }
+            else{
+              global.toSpeech(transcript+"is removed");
+            }
+            
           }
           else{
             global.toSpeech(transcript+" is not in the options");
@@ -268,6 +285,12 @@ class ResponseForm extends Component {
 
       recognition.stop();
       console.log('voice stopped')
+      this.setState({
+        micStatus: this.state.micStatus.map((c) => {
+          return false;
+        })
+      })
+
 
     }
 
@@ -306,7 +329,7 @@ class ResponseForm extends Component {
         {
           formData.length !== 0 ?
           formData.Data.map((data, index) => (
-            <ResponseFormCard micStatus={micStatus} handleSpeechToText={this.handleSpeechToText} data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
+            <ResponseFormCard mstat={micStatus[index]} handleSpeechToText={this.handleSpeechToText} data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
         ))
       :
     null}

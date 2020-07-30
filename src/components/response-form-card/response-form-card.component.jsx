@@ -41,7 +41,7 @@ const useStyles = ({
 class ResponseFormCard  extends React.Component  {
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.data === this.props.data && nextProps.ansData[nextProps.index] === this.props.ansData[this.props.index] && !Array.isArray(nextProps.ansData[nextProps.index]) ){
+    if (nextProps.data === this.props.data && nextProps.ansData[nextProps.index] === this.props.ansData[this.props.index] && !Array.isArray(nextProps.ansData[nextProps.index])  && nextProps.mstat === this.props.mstat ){
       return false;
     }
     return true;
@@ -54,13 +54,13 @@ class ResponseFormCard  extends React.Component  {
 render(){
   
 
-  const {data, index, handleChange, ansData, handleCheckBoxChange, handleSpeechToText , micStatus , classes } = this.props
+  const {data, index, handleChange, ansData, handleCheckBoxChange, handleSpeechToText , mstat , classes } = this.props
 
   let ans = ansData[index];
-  let mstat = micStatus[index]
+
   return (
     <div>
-    {console.log('yo')}
+    {console.log(mstat)}
       <div className="card-wrapper">
         <Card className={classes.card}>
           <CardContent>
