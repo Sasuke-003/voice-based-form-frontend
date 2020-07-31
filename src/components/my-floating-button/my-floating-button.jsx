@@ -50,12 +50,22 @@ const useStyles = makeStyles( ( theme ) => ({
     position : 'fixed',
 
   },
+  fabbb: {
+
+    margin   : 0,
+    top      : 'auto',
+    left     : 100,
+    bottom   : 20,
+    right    : 'auto',
+    position : 'fixed',
+
+  },
 
 }));
 
 
 
-const MyFloatingButton = (  { mic, done, ...otherProps } ) => {
+const MyFloatingButton = (  { two, mic, done, ...otherProps } ) => {
 
 
   const classes = useStyles();
@@ -88,6 +98,16 @@ const MyFloatingButton = (  { mic, done, ...otherProps } ) => {
           </Fab>
         
         :
+
+        two ?
+
+        <Fab className={classes.fabbb} color="primary" aria-label="add" {...otherProps}>
+
+            <MicIcon />
+
+          </Fab>
+
+          :
 
 
           <Fab className={classes.fab} color="primary" aria-label="add" {...otherProps}>

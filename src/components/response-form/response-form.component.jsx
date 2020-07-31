@@ -24,7 +24,6 @@ const SpeechRecognition =
 
 const recognition = new SpeechRecognition();
 
-recognition.start();
 
 const useStyles = {
   root: {
@@ -76,7 +75,7 @@ class ResponseForm extends Component {
       formData: [],
       popperStatus: false,
       ansData: [],
-      mstat: true,
+      mstat: false,
       currentIndex: 0,
     };
   }
@@ -284,15 +283,18 @@ class ResponseForm extends Component {
       console.log(transcript);
 
         // compare code
-        if ((transcript.substr(0, 5) === "focus" && hasNumbers(transcript) ) || transcript === 'focus one' || transcript === 'focus to' ) {
+        if ((transcript.substr(0, 5) === "focus" && hasNumbers(transcript) ) || transcript === 'focus for' || transcript === 'focus tree' || transcript === 'focus one' || transcript === 'focus to' ) {
           let number = transcript.match(/\d+/);
           if(transcript==='focus one') number = 1;
           if(transcript==='focus to') number = 2;
+          if(transcript==='focus tree') number = 3;
+          if(transcript==='focus for') number = 4;
           //focus number
           if (number <= formData.Data.length) {
             this.setState({
               currentIndex: number-1
             })
+            global.toSpeech("question "+number+" is focused")
           }
           else if( number < 0 ){
             global.toSpeech("wrong question number")
@@ -301,12 +303,14 @@ class ResponseForm extends Component {
             this.setState({
               currentIndex: formData.Data.length-1
             })
+            global.toSpeech("question "+formData.Data.length+" is focused")
           }
         } else if (
           transcript.substr(0, 6) === "submit" ||
           transcript === "submit form"
         ) {
           this.submitForm();
+          global.toSpeech("Form submitted successfully")
         } else {
           if (formData.Data[currentIndex].Typ === "CB") {
             let newData = this.state.ansData;

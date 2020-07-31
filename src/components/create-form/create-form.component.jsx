@@ -11,9 +11,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import MicIcon from "@material-ui/icons/Mic";
+
 import { connect } from "react-redux";
 
 import { setFormData } from "../../redux/form/form.action";
@@ -49,7 +47,6 @@ const SpeechRecognition =
 
 const recognition = new SpeechRecognition();
 
-recognition.start();
 
 let timerID;
 const timeOutValue = 1000;
@@ -378,7 +375,7 @@ class CreateForm extends Component {
       let current = e.resultIndex;
       let transcript = e.results[current][0].transcript;
 
-      console.log(transcript + " and its type " + typeof transcript);
+      console.log(transcript);
       transcript = transcript.toLowerCase();
 
       if (transcript === "add question") {
@@ -388,19 +385,21 @@ class CreateForm extends Component {
         transcript.includes("question") &&
         hasNumbers(transcript)
       ) {
-        console.log(transcript.substr(4, 2) + "sd");
         let number = transcript.match(/\d+/);
         console.log("number in string is " + number);
         //add number question
         for (let i = 0; i < number; i++) {
           this.addQuestion();
         }
-      } else if (
+      } else if ((
         transcript.substr(0, 5) === "focus" &&
-        hasNumbers(transcript)
+        hasNumbers(transcript)) || transcript === 'focus for' || transcript === 'focus tree' || transcript === 'focus one' || transcript === 'focus to'
       ) {
         let number = transcript.match(/\d+/);
-        console.log("number in string is " + number);
+        if(transcript==='focus one') number = 1;
+        if(transcript==='focus to') number = 2;
+        if(transcript==='focus tree') number = 3;
+        if(transcript==='focus for') number = 4;
         //focus number
         if (number >= qData.length) {
           let id = qData[qData.length - 1].id;
@@ -424,7 +423,7 @@ class CreateForm extends Component {
           );
         }
       } else if (
-        transcript.substr(0, 9) === "add title" &&
+        transcript.substr(0, 9) === "set title" &&
         !!transcript.substr(10)
       ) {
         const title = transcript.substr(10);
@@ -438,7 +437,7 @@ class CreateForm extends Component {
           }
         );
       } else if (
-        transcript.substr(0, 15) === "add description" &&
+        transcript.substr(0, 15) === "set description" &&
         !!transcript.substr(18)
       ) {
         const description = transcript.substr(16);
@@ -467,7 +466,7 @@ class CreateForm extends Component {
         }
       } else if (
         transcript.substr(0, 3) === "add" &&
-        transcript.includes("options")
+        (transcript.includes("options") || transcript.includes("option") )
       ) {
         const number = transcript.match(/\d+/);
         console.log("number is " + number);
@@ -498,7 +497,6 @@ class CreateForm extends Component {
           transcript.substr(14) === "text field")
       ) {
         const option = transcript.substr(14); //m,c,d,t
-        console.log("option is " + option);
         if (option === "multiplechoice" || option === "multiple choice") {
           this.handleSpeechSelectChange(currentId, "RB");
         } else if (option === "checkbox" || option === "check box") {
@@ -508,12 +506,12 @@ class CreateForm extends Component {
         } else if (option === "dropdown" || option === "drop down") {
           this.handleSpeechSelectChange(currentId, "DD");
         }
+        global.toSpeech(option+" is selected")
       } else if (
-        transcript.substr(0, 13) === "edit question" &&
-        !!transcript.substr(14)
+        transcript.substr(0, 12) === "set question" &&
+        !!transcript.substr(13)
       ) {
-        const question = transcript.substr(14);
-        console.log("question is " + question);
+        const question = transcript.substr(13);
         //fill question string
         this.setState(
           {
@@ -527,16 +525,23 @@ class CreateForm extends Component {
           }
         );
       } else if (
-        transcript.substr(0, 11) === "edit option" &&
-        transcript.substr(15) &&
+        transcript.substr(0, 10) === "set option" &&
+        transcript.substr(14) &&
         transcript.includes("as")
       ) {
-        const number = transcript.match(/\d+/);
+        let number = transcript.match(/\d+/);
         console.log("number is " + number);
 
         const value = transcript.substr(transcript.indexOf("as") + 2);
         console.log("value is " + value);
         //fill option number value
+        if(number === null){
+          if(transcript.substr(11,3)==='one') number = 1;
+          else if(transcript.substr(11,2)==='to') number = 2;
+          else if(transcript.substr(11,4)==='tree') number = 3;
+          else if(transcript.substr(11,3)==='for') number = 4;
+        }
+        
         this.handleSpeechAnswerChange(value, currentId, number - 1);
       } else if (transcript === "remove question") {
         //remove question
@@ -549,15 +554,14 @@ class CreateForm extends Component {
         console.log("number is " + number);
         //remove option number
         this.handleSpeechDeleteAnswer(currentId, number);
-      } else {
-        global.toSpeech("Cant recognize your voice, please try again");
-      }
-
-      if (transcript === "submit form") {
+      } 
+      else if(transcript === "submit form") {
         this.submitForm();
-      } else {
+      } 
+      else {
         global.toSpeech("wrong command");
       }
+
     }
 
 
@@ -629,16 +633,6 @@ class CreateForm extends Component {
             </CardContent>
           </Card>
         </div>
-        <Tooltip title="Speak">
-          <IconButton
-            className={classes.micIcon}
-            onClick={this.micOn}
-            disabled={mstat}
-          >
-            <MicIcon className={classes.micIcon}></MicIcon>
-          </IconButton>
-        </Tooltip>
-
         {qData.map((data, index) => (
           <CreateQuestionContainer
             no={index + 1}
@@ -656,6 +650,7 @@ class CreateForm extends Component {
         ))}
         <MyFloatingButton onClick={this.addQuestion} />
         <MyFloatingButton onClick={this.handleOpen} done />
+        <MyFloatingButton two onClick={this.micOn} disabled={mstat}/>
 
         <Dialog
           open={popperStatus}
