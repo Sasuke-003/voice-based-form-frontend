@@ -61,7 +61,8 @@ class ResponseForm extends Component {
       formData: [],
       popperStatus: false,
       ansData: [],
-      micStatus: [],
+      mstat: false,
+      currentIndex: 0,
     };
   }
 
@@ -181,6 +182,7 @@ class ResponseForm extends Component {
           }
         }
       }
+      this.handleClose();
     }
 
     try {
@@ -207,19 +209,8 @@ class ResponseForm extends Component {
   }
 
   handleSpeechToText = (index) => {
-        const { formData } = this.state;
-        recognition.start();
 
-      recognition.onstart = () => {
-
-        this.setState({
-          micStatus: this.state.micStatus.map((c) => {
-            return true;
-          })
-        })
-
-      }
-
+    const {formData} = this.state;
 
         recognition.onresult = (e) => {
           let current = e.resultIndex;
@@ -281,25 +272,71 @@ class ResponseForm extends Component {
       }
 
   
-    recognition.onspeechend = () => {
-
-      recognition.stop();
-      console.log('voice stopped')
-      this.setState({
-        micStatus: this.state.micStatus.map((c) => {
-          return false;
-        })
-      })
-
-
-    }
+   
 
 
   }
 
 
+
+  voiceCommands = () => {
+
+    
+    recognition.onstart = () => {
+      console.log('started');
+
+      this.setState({
+        mstat: true
+      })
+    }
+
+
+    recognition.onresult = (e) => {
+      let current = e.resultIndex;
+      let transcript = e.results[current][0].transcript;
+    
+      console.log(transcript+' and its type '+typeof(transcript));
+      transcript=transcript.toLowerCase();
+    
+     if( transcript === 'shdgshjgd'){
+
+
+      // compare code
+     }
+
+
+      setTimeout(()=> {
+        recognition.start();
+      }, 500);
+
+    }
+
+    recognition.onspeechend = () => {
+
+      recognition.stop();
+
+      console.log('stopped')
+
+      this.setState({
+        mstat: false,
+      })
+
+      
+
+    }
+  
+  
+  }
+
+  micOn = () => {
+
+    recognition.start();
+
+  }
+
+
   render() {
-    const { formData, popperStatus, ansData, micStatus } = this.state;
+    const { formData, popperStatus, ansData, mstat, currentIndex } = this.state;
     const { classes } = this.props;
 
     return (
@@ -329,11 +366,13 @@ class ResponseForm extends Component {
         {
           formData.length !== 0 ?
           formData.Data.map((data, index) => (
-            <ResponseFormCard mstat={micStatus[index]} handleSpeechToText={this.handleSpeechToText} data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
+            <ResponseFormCard  currentIndex={currentIndex} handleSpeechToText={this.handleSpeechToText} data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
         ))
       :
     null}
+    <MyFloatingButton onClick={this.micOn} mic disabled={mstat} />
         <MyFloatingButton onClick={this.handleOpen} done />
+
 
         <Dialog
           open={popperStatus}
