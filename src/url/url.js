@@ -12,6 +12,7 @@ export const URL = {
     formCreate : '/form/template/new',
     formDetail : '/form/template/detail/',
     formAnswer : '/form/ans/new',
+    formList   : '/form/template/list/',
     
     /////////////////////////////////////
     refreshToken : '/auth/refresh-token',
@@ -44,6 +45,7 @@ export const req = {
         create : async ( body  ) => { return await axios.post( URL.formCreate, body ) },
         detail : async ( param ) => { console.log(URL.formDetail+param); return await axios.get( URL.formDetail+param ) },
         answer : async ( data ) => { return await axios.post( URL.formAnswer, data ) },
+        list : async ( data ) => { return await axios.get( URL.formList+data ) },
 
     },
 

@@ -7,6 +7,7 @@ import SignInPage from './pages/sign-in-page/sign-in-page';
 import SignUpPage from './pages/sign-up-page/sign-up-page';
 import CreateFormPage from './pages/create-form-page/create-form-page'
 import ResponseForm from './components/response-form/response-form.component'
+import MyFormsPage from './pages/my-forms-page/my-forms-page'
 
 
 import './App.css';
@@ -29,7 +30,7 @@ class App extends React.Component {
 
           <Route exact path='/signup' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignUpPage />) } />  
 
-          <Route exact path='/myforms' render={() => this.props.currentUser ? (<CreateFormPage />) : (<Redirect to='/signin' />) } /> 
+          <Route exact path='/myforms' render={() => this.props.currentUser ? (<MyFormsPage />) : (<Redirect to='/signin' />) } /> 
           
           <Route path='/forms/:id' component={ResponseForm} /> 
             

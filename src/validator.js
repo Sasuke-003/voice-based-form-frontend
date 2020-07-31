@@ -7,8 +7,7 @@ const validator = {
     
     "/form/template/new" : form.template.new,
 
-    "/form/ans/new"      : form.ans.new,
-
+    "/form/ans/new"       : form.ans.new,
 
     } ;
     

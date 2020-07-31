@@ -51,6 +51,8 @@ class ResponseFormCard  extends React.Component  {
      global.toSpeech(this.props.data.Que);
   }
 
+  
+
 render(){
   
 
@@ -131,6 +133,7 @@ render(){
           </CardContent>
         </Card>
       </div>
+      
     </div>
   );
 }
