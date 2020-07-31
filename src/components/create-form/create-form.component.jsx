@@ -561,11 +561,6 @@ storeInRedux(){
       }
 
 
-      setTimeout(()=> {
-        recognition.start();
-      }, 50);
-
-
     }
 
     recognition.onspeechend = () => {
@@ -609,7 +604,7 @@ storeInRedux(){
     console.log(this.props.reduxFormData);
     this.setState(this.props.reduxFormData)
 
-    this.voiceCommands();
+    
   }
 
   render() {

@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
+import HelpIcon from '@material-ui/icons/Help';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import HistoryIcon from '@material-ui/icons/History';
@@ -124,6 +125,19 @@ const Header = ( { currentUser, setCurrentUser, history } ) => {
       </List>
 
       <Divider />
+
+      {
+        currentUser  ?
+
+          <ListItem button key={2} onClick={() => {history.push('/info')}} >
+
+            <ListItemIcon> <HelpIcon /> </ListItemIcon>
+            <ListItemText primary='HELP' />
+
+          </ListItem>
+        :
+          null
+      }
 
     </div>
 
