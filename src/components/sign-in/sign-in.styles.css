@@ -1,0 +1,21 @@
+.sign-in {
+    margin-top: 50%;
+}
+
+.button {
+    width: 50%;
+}
+
+@media only screen and (min-width: 768px) {
+/* for desktop  */
+.sign-in {
+    margin-top: 25%;
+}
+.button {
+    width: 20%;
+}
+}
+
+
+
+
