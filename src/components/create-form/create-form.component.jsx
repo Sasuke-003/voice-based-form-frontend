@@ -588,7 +588,7 @@ class CreateForm extends Component {
     console.log(this.props.reduxFormData);
     this.setState(this.props.reduxFormData);
 
-    
+    this.voiceCommands();
   }
 
   render() {

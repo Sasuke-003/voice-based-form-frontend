@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 
 import MyFloatingButton from "../my-floating-button/my-floating-button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import InputField from "../input-field/inputfield.component";
 import { withStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -26,6 +23,8 @@ const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 
 const recognition = new SpeechRecognition();
+
+recognition.start();
 
 const useStyles = {
   root: {
@@ -77,7 +76,7 @@ class ResponseForm extends Component {
       formData: [],
       popperStatus: false,
       ansData: [],
-      mstat: false,
+      mstat: true,
       currentIndex: 0,
     };
   }
@@ -109,6 +108,7 @@ class ResponseForm extends Component {
       },
       () => {
         this.setDataToState(res.Data);
+        this.voiceCommands();
       }
     );
   };
@@ -262,58 +262,11 @@ class ResponseForm extends Component {
     }
   };
 
-  handleSpeechToText = (index) => {
-    const { formData } = this.state;
-
-    recognition.onresult = (e) => {
-      let current = e.resultIndex;
-      let transcript = e.results[current][0].transcript;
-
-      console.log(transcript);
-
-      if (formData.Data[index].Typ === "CB") {
-        let newData = this.state.ansData;
-        let i = this.state.formData.Data[index].Opt.indexOf(transcript);
-
-        if (i !== -1) {
-          console.log(newData[index]);
-          newData[index][i] = !newData[index][i];
-          this.setState({
-            ansData: newData,
-          });
-          if (newData[index][i]) {
-            global.toSpeech(transcript + "is selected");
-          } else {
-            global.toSpeech(transcript + "is removed");
-          }
-        } else {
-          global.toSpeech(transcript + " is not in the options");
-        }
-      } else if (formData.Data[index].Typ === "TF") {
-        this.setState({
-          ansData: this.state.ansData.map((c, i) => {
-            if (index !== i) return c;
-            return transcript;
-          }),
-        });
-      } else {
-        let i = this.state.formData.Data[index].Opt.indexOf(transcript);
-        if (i !== -1) {
-          this.setState({
-            ansData: this.state.ansData.map((c, i) => {
-              if (index !== i) return c;
-              return transcript;
-            }),
-          });
-          global.toSpeech("option set");
-        } else {
-          global.toSpeech(transcript + " is not in the options");
-        }
-      }
-    };
-  };
 
   voiceCommands = () => {
+
+    const { formData, currentIndex } = this.state;
+
     recognition.onstart = () => {
       console.log("started");
 
@@ -326,35 +279,28 @@ class ResponseForm extends Component {
       let current = e.resultIndex;
       let transcript = e.results[current][0].transcript;
 
-      console.log(transcript + " and its type " + typeof transcript);
+     
       transcript = transcript.toLowerCase();
+      console.log(transcript);
 
-      if (transcript === "shdgshjgd") {
         // compare code
-        if (transcript.substr(0, 5) === "focus" && hasNumbers(transcript)) {
+        if ((transcript.substr(0, 5) === "focus" && hasNumbers(transcript) ) || transcript === 'focus one' || transcript === 'focus to' ) {
           let number = transcript.match(/\d+/);
-
+          if(transcript==='focus one') number = 1;
+          if(transcript==='focus to') number = 2;
           //focus number
-          if (number >= formData.length) {
-            let id = formData[formData.length - 1].id;
-            this.setState(
-              {
-                currentId: id,
-              },
-              () => {
-                this.storeInRedux();
-              }
-            );
-          } else {
-            let id = formData[number - 1].id;
-            this.setState(
-              {
-                currentId: id,
-              },
-              () => {
-                this.storeInRedux();
-              }
-            );
+          if (number <= formData.Data.length) {
+            this.setState({
+              currentIndex: number-1
+            })
+          }
+          else if( number < 0 ){
+            global.toSpeech("wrong question number")
+          }
+          else{
+            this.setState({
+              currentIndex: formData.Data.length-1
+            })
           }
         } else if (
           transcript.substr(0, 6) === "submit" ||
@@ -362,14 +308,47 @@ class ResponseForm extends Component {
         ) {
           this.submitForm();
         } else {
-        /*  -- SELECT ANSWER --- */
-          global.toSpeech("please speak louder");
+          if (formData.Data[currentIndex].Typ === "CB") {
+            let newData = this.state.ansData;
+            let i = this.state.formData.Data[currentIndex].Opt.indexOf(transcript);
+    
+            if (i !== -1) {
+              console.log(newData[currentIndex]);
+              newData[currentIndex][i] = !newData[currentIndex][i];
+              this.setState({
+                ansData: newData,
+              });
+              if (newData[currentIndex][i]) {
+                global.toSpeech(transcript + "is selected");
+              } else {
+                global.toSpeech(transcript + "is removed");
+              }
+            } else {
+              global.toSpeech(transcript + " is not in the options");
+            }
+          } else if (formData.Data[currentIndex].Typ === "TF") {
+            this.setState({
+              ansData: this.state.ansData.map((c, i) => {
+                if (currentIndex !== i) return c;
+                return transcript;
+              }),
+            });
+          } else {
+            let i = this.state.formData.Data[currentIndex].Opt.indexOf(transcript);
+            if (i !== -1) {
+              this.setState({
+                ansData: this.state.ansData.map((c, i) => {
+                  if (currentIndex !== i) return c;
+                  return transcript;
+                }),
+              });
+              global.toSpeech("option set");
+            } else {
+              global.toSpeech(transcript + " is not in the options");
+            }
+          }
         }
-      }
-
-      setTimeout(() => {
-        recognition.start();
-      }, 500);
+      
     };
 
     recognition.onspeechend = () => {
@@ -386,6 +365,14 @@ class ResponseForm extends Component {
   micOn = () => {
     recognition.start();
   };
+
+  componentWillUpdate() {
+    this.voiceCommands();
+  }
+
+  componentDidUpdate() {
+    this.voiceCommands();
+  }
 
   render() {
     const { formData, popperStatus, ansData, mstat, currentIndex } = this.state;

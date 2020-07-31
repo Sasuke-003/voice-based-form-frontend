@@ -3,21 +3,15 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import FormGroup from "@material-ui/core/FormGroup";
 import InputField from "../input-field/inputfield.component";
-import Divider from "@material-ui/core/Divider";
-
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-
 import Typography from "@material-ui/core/Typography";
 import VolumeUpIcon from "@material-ui/icons/VolumeUp";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import MicIcon from "@material-ui/icons/Mic";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import RadioGroup from '@material-ui/core/RadioGroup';
 import { withStyles } from '@material-ui/core/styles';
-import shallowCompare from "react-addons-shallow-compare";
 import RadioAns from '../radio-ans/radio-ans.component'
 import FormControl from "@material-ui/core/FormControl";
 
@@ -42,7 +36,7 @@ const useStyles = ({
 class ResponseFormCard  extends React.Component  {
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.data === this.props.data && nextProps.ansData[nextProps.index] === this.props.ansData[this.props.index] && !Array.isArray(nextProps.ansData[nextProps.index])  && nextProps.mstat === this.props.mstat ){
+    if (nextProps.data === this.props.data && nextProps.ansData[nextProps.index] === this.props.ansData[this.props.index] && !Array.isArray(nextProps.ansData[nextProps.index])  && nextProps.mstat === this.props.mstat && nextProps.currentIndex === this.props.currentIndex ){
       return false;
     }
     return true;
