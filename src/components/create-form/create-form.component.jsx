@@ -11,6 +11,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+import MicIcon from "@material-ui/icons/Mic";
 
 import { req } from '../../url/url';
 
@@ -37,6 +40,41 @@ const useStyles = {
   },
 };
 
+
+const SpeechRecognition = window.SpeechRecognition ||  window.webkitSpeechRecognition;
+
+const recognition  = new SpeechRecognition();
+
+
+recognition.start();
+
+
+recognition.onresult = (e) => {
+  let current = e.resultIndex;
+  let transcript = e.results[current][0].transcript;
+
+  console.log(transcript);
+
+  if (transcript === 'add question'){
+    global.addQuestion();
+  }
+  else if(transcript.substr(0,4) === 'add ' && transcript.includes('question')  ){
+
+    console.log(transcript.substr(4,2)+'sd');
+
+  }
+}
+
+recognition.onspeechend = () => {
+
+  recognition.stop();
+
+}
+
+
+
+
+
 class CreateForm extends Component {
   constructor(props) {
     super(props);
@@ -49,8 +87,12 @@ class CreateForm extends Component {
       popperStatus: false,
     };
   }
+  
+
+  
 
   addQuestion = () => {
+    
     this.setState(
       {
         qData: [
@@ -230,7 +272,9 @@ class CreateForm extends Component {
       Desc: '',
       qData: [],
       currentId: "",
-      popperStatus: false,})
+      popperStatus: false,
+      mstat: false,
+    })
 
    alert("successfully created")
 
@@ -239,12 +283,31 @@ class CreateForm extends Component {
 
   }
 
+
+  handleSpeechToText = () => {
+
+    recognition.start();
+
+   
+
+  
+
+
+}
+
+
+
+  
+
   componentDidMount() {
+
+    global.addQuestion = this.addQuestion;
+    
     this.addQuestion();
   }
 
   render() {
-    const { qData, currentId, popperStatus, Title, Desc } = this.state;
+    const { qData, currentId, popperStatus, Title, Desc, mstat } = this.state;
     const { classes } = this.props;
 
     return (
@@ -274,6 +337,11 @@ class CreateForm extends Component {
             </CardContent>
           </Card>
         </div>
+        <Tooltip title="Speak">
+        <IconButton className={classes.micIcon} onClick={this.handleSpeechToText} disabled={mstat} >
+          <MicIcon className={classes.micIcon}></MicIcon>
+        </IconButton>
+      </Tooltip>
 
         {qData.map((data) => (
           <CreateQuestionContainer
@@ -324,5 +392,6 @@ class CreateForm extends Component {
     );
   }
 }
+
 
 export default withStyles(useStyles)(CreateForm);
