@@ -3,6 +3,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import FormGroup from "@material-ui/core/FormGroup";
 import InputField from "../input-field/inputfield.component";
+import Divider from "@material-ui/core/Divider";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

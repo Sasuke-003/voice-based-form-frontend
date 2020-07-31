@@ -5,6 +5,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import InputField from "../input-field/inputfield.component";
 import { withStyles } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
