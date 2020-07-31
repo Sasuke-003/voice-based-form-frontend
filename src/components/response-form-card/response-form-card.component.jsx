@@ -56,7 +56,9 @@ class ResponseFormCard  extends React.Component  {
 render(){
   
 
+
   const { currentIndex, data, index, handleChange, ansData, handleCheckBoxChange, classes } = this.props
+
 
   let ans = ansData[index];
 
@@ -64,6 +66,7 @@ render(){
     <div>
       <div className="card-wrapper">
         <Card className={classes.card} raised={currentIndex === index ? true : false} >
+
           <CardContent>
             <div className="question">
               <Typography variant="h5" gutterBottom>

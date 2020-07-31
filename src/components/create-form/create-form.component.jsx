@@ -101,9 +101,6 @@ storeInRedux(){
   } , timeOutValue ) ;
 
 
-
-
-
 }
   
 
@@ -395,7 +392,6 @@ storeInRedux(){
     const { qData, currentId } = this.state;
     recognition.onstart = () => {
       console.log('started');
-
       this.setState({
         mstat: true
       })
@@ -455,8 +451,10 @@ storeInRedux(){
           })
     
       }
+
       else if(transcript.substr(0,15)==='add description' && !!transcript.substr(18)){
         const description=transcript.substr(16);
+
         //add description 'description'
         this.setState({
           Desc: description 
@@ -553,9 +551,11 @@ storeInRedux(){
         //remove option number
         this.handleSpeechDeleteAnswer(currentId, number);
       }
+
       else if(transcript === 'submit form'){
         this.submitForm();
       }
+
       else{
         global.toSpeech('Cant recognize your voice, please try again');
       }
@@ -563,7 +563,8 @@ storeInRedux(){
 
       setTimeout(()=> {
         recognition.start();
-      }, 500);
+      }, 50);
+
 
     }
 
@@ -576,6 +577,7 @@ storeInRedux(){
       this.setState({
         mstat: false,
       })
+
 
       
 
@@ -592,11 +594,13 @@ storeInRedux(){
     this.voiceCommands();
   }
 
+
   micOn = () => {
 
     recognition.start();
 
   }
+
   
 
 
@@ -640,7 +644,9 @@ storeInRedux(){
           </Card>
         </div>
         <Tooltip title="Speak">
+
         <IconButton className={classes.micIcon} onClick={this.micOn} disabled={mstat} >
+
           <MicIcon className={classes.micIcon}></MicIcon>
         </IconButton>
       </Tooltip>

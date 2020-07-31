@@ -12,6 +12,7 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { withRouter } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { req } from '../../url/url'
@@ -26,6 +27,7 @@ const recognition  = new SpeechRecognition();
 
 
 
+
 const useStyles = {
   root: {
     transition: "box-shadow 280ms",
@@ -34,22 +36,31 @@ const useStyles = {
     flexDirection: "column",
     position: "relative",
     marginTop: "2%",
-    backgroundColor: '#F0EBF8',
+    backgroundColor: "#F0EBF8",
   },
   formTitle: {
     width: "100%",
-    fontSize: "50px",
+    fontSize: "32px",
     fontWeight: 400,
-    lineHeight: "135%",
+    textTransform: "uppercase",
+
   },
   formDesc: {
     width: "100%",
     fontSize: "20px",
     fontWeight: 400,
-    lineHeight: "100%",
   },
   cir: {
-    marginTop: '40%'
+    marginTop: "40%",
+  },
+  divider: {
+    margin: "2%",
+    marginBottom: "2%",
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
+    marginTop: "2%",
+
   },
 };
 
@@ -63,10 +74,13 @@ class ResponseForm extends Component {
       ansData: [],
       mstat: false,
       currentIndex: 0,
+
+
     };
   }
 
   componentDidMount = async () => {
+
     const {match: { params }} = this.props;
 
     await delay(2000);
@@ -93,7 +107,7 @@ class ResponseForm extends Component {
 
   }
 
-  setDataToState = (data) => {
+  setDataToState = async (data) => {
 
     let newData = [];
     let newMicData = [];
@@ -118,7 +132,54 @@ class ResponseForm extends Component {
       }
 
       newMicData.push(false)
+    }
 
+    const {
+      match: { params },
+    } = this.props;
+
+    await delay(2000);
+
+    const res = await req.form.detail(params.id);
+
+    this.setState(
+      {
+        formData: res,
+      },
+      () => {
+        this.setDataToState(res.Data);
+      }
+    );
+  };
+
+  handleClose = (event) => {
+    this.setState({ popperStatus: false });
+  };
+
+  handleOpen = (event) => {
+    this.setState({ popperStatus: true });
+  };
+
+  setDataToState = (data) => {
+    let newData = [];
+    let newMicData = [];
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].Typ === "CB") {
+        let op = [];
+
+        for (let j = 0; j < data[i].Opt.length; j++) {
+          op.push(false);
+        }
+
+        newData.push(op);
+      } else if (data[i].Typ === "DD" && data[i].Opt.length !== 0) {
+        newData.push(data[i].Opt[0]);
+      } else {
+        newData.push("");
+      }
+
+      newMicData.push(false);
     }
 
     this.setState({
@@ -129,7 +190,6 @@ class ResponseForm extends Component {
   }
 
   handleChange = (event, index) => {
-
     const { value } = event.target;
 
     this.setState({
@@ -144,7 +204,6 @@ class ResponseForm extends Component {
   }
 
   handleCheckBoxChange = (event, index, ai) => {
-
     const { checked } = event.target;
 
     let newData = this.state.ansData;
@@ -171,6 +230,7 @@ class ResponseForm extends Component {
           }
         }
         newData.push(op);
+
       }
       else if(formData.Data[i].Typ === 'TF' ){
         newData.push(ansData[i]);
@@ -341,38 +401,45 @@ class ResponseForm extends Component {
 
     return (
       <div>
-        {
-          formData.length === 0 ?
-          <CircularProgress className={classes.cir}  />
-          :
-          null
 
-        }
-
-
+        {formData.length === 0 ? (
+          <CircularProgress className={classes.cir} />
+        ) : null}
 
         <div
-          style={{ marginTop: "20px", paddingBottom: "20px", maxWidth: "770px" }}
+          style={{
+            margin: "auto",
+            paddingBottom: "5px",
+            maxWidth: "770px",
+          }}
         >
-         
-              <div>
-              <Typography variant="h5" className={classes.formTitle} >{formData.Title}</Typography>
-
-               <Typography variant='h5'  className={classes.formDesc} >{formData.Desc}</Typography>
-              </div>
-           
+          <div
+            style={{
+              margin: "45px",
+              marginBottom: "20px",
+            }}
+          >
+            <div className={classes.formTitle}>
+              <Typography variant="h5" className={classes.formTitle}>
+                {formData.Title}
+              </Typography>
+            </div>
+            <div className={classes.formDesc}>
+              <Typography variant="h5" className={classes.formDesc}>
+                {formData.Desc}
+              </Typography>
+            </div>
+          </div>
+          <Divider className={classes.divider} />
         </div>
 
-        {
-          formData.length !== 0 ?
-          formData.Data.map((data, index) => (
+        {formData.length !== 0
+          ? formData.Data.map((data, index) => (
             <ResponseFormCard  currentIndex={currentIndex} handleSpeechToText={this.handleSpeechToText} data={data} key={index} index={index} handleChange={this.handleChange} ansData={ansData} handleCheckBoxChange={this.handleCheckBoxChange} />
-        ))
-      :
-    null}
-    <MyFloatingButton onClick={this.micOn} mic disabled={mstat} />
-        <MyFloatingButton onClick={this.handleOpen} done />
-
+            ))
+          : null}
+          <MyFloatingButton onClick={this.micOn} mic disabled={mstat} />
+          <MyFloatingButton onClick={this.handleOpen} done />
 
         <Dialog
           open={popperStatus}
