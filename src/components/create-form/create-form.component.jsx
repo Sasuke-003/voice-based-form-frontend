@@ -40,6 +40,12 @@ const useStyles = {
   },
 };
 
+function hasNumbers(t)
+{
+var regex = /\d/g;
+return regex.test(t);
+} 
+
 
 const SpeechRecognition = window.SpeechRecognition ||  window.webkitSpeechRecognition;
 
@@ -53,15 +59,78 @@ recognition.onresult = (e) => {
   let current = e.resultIndex;
   let transcript = e.results[current][0].transcript;
 
-  console.log(transcript);
+  console.log(transcript+' and its type '+typeof(transcript));
+  transcript=transcript.toLowerCase();
 
   if (transcript === 'add question'){
     global.addQuestion();
   }
-  else if(transcript.substr(0,4) === 'add ' && transcript.includes('question')  ){
+  else if(transcript.substr(0,4) === 'add ' && transcript.includes('question') && hasNumbers(transcript) ){
 
     console.log(transcript.substr(4,2)+'sd');
+    let number = transcript.match(/\d+/);
+    console.log('number in string is '+number);
+    //add number question
+    
+  }
+  else if(transcript.substr(0,5)==='focus' && hasNumbers(transcript)){
+    let number = transcript.match(/\d+/);
+    console.log('number in string is '+number);
+    //focus number
 
+  }
+  else if(transcript.substr(0,9)==='add title' && !!transcript.substr(10)){
+      const title=transcript.substr(10);
+      //add title 'title'
+
+  }
+  else if(transcript.substr(0,16)==='add description' && !!transcript.substr(18)){
+    const description=transcript.substr(18);
+    //add description 'description'
+
+  }
+  else if(transcript==='add option'){
+    //add option
+
+  }
+  else if(transcript.substr(0,4)==='add' && transcript.includes('options') ){
+    const number=transcript.match(/\d+/);
+    console.log('number is '+number);
+    //add 'number' option
+
+  }
+  else if(transcript.substr(0,13)==='select option' && transcript.length===15 && (transcript.substr(14)==='m'||transcript.substr(14)==='c'||transcript.substr(14)==='d'||transcript.substr(14)==='t')){
+    const option=transcript.substr(14);//m,c,d,t
+    console.log('option is o'+option);
+    //select option 'm|c|d|t'
+
+  }
+  else if(transcript.substr(0,13)==='fill question' && !!transcript.substr(14)){
+      const question=transcript.substr(14);
+      console.log('question is '+question);
+      //fill question string
+
+  }
+  else if(transcript.substr(0,11)==='fill option' && transcript.substr(15) && transcript.includes('as')){
+    const number=transcript.match(/\d+/);
+    console.log('number is '+number);
+
+    const value=transcript.substr(transcript.indexOf('as')+2);
+    console.log('value is '+value);
+    //fill option number value
+
+  }
+  else if(transcript==='remove question'){
+    //remove question
+
+  }
+  else if(transcript.substr(0,13)==='remove option' && !!transcript.substr(14)){
+    const number=transcript.match(/\d+/);
+    console.log('number is '+number);
+    //remove option number
+  }
+  else{
+    global.toSpeech('Cant recognize your voice, please try again');
   }
 }
 
