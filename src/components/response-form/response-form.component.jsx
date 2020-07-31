@@ -5,6 +5,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import InputField from "../input-field/inputfield.component";
 import { withStyles } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -12,8 +13,8 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { withRouter } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Divider from "@material-ui/core/Divider";
 
 import { req } from "../../url/url";
 
@@ -60,6 +61,14 @@ const useStyles = {
   },
 };
 
+function hasNumbers(t) {
+  var regex = /\d/g;
+  return regex.test(t);
+}
+
+let timerID;
+const timeOutValue = 1000;
+
 class ResponseForm extends Component {
   constructor(props) {
     super(props);
@@ -68,11 +77,72 @@ class ResponseForm extends Component {
       formData: [],
       popperStatus: false,
       ansData: [],
-      micStatus: [],
+      mstat: false,
+      currentIndex: 0,
     };
   }
 
+  storeInRedux() {
+    if (timerID) clearTimeout(timerID);
+
+    timerID = setTimeout(async () => {
+      timerID = undefined;
+
+      timerID = undefined;
+
+      this.props.setFormData(this.state);
+    }, timeOutValue);
+  }
+
   componentDidMount = async () => {
+    const {
+      match: { params },
+    } = this.props;
+
+    await delay(2000);
+
+    const res = await req.form.detail(params.id);
+
+    this.setState(
+      {
+        formData: res,
+      },
+      () => {
+        this.setDataToState(res.Data);
+      }
+    );
+  };
+
+  handleClose = (event) => {
+    this.setState({ popperStatus: false });
+  };
+
+  handleOpen = (event) => {
+    this.setState({ popperStatus: true });
+  };
+
+  setDataToState = async (data) => {
+    let newData = [];
+    let newMicData = [];
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].Typ === "CB") {
+        let op = [];
+
+        for (let j = 0; j < data[i].Opt.length; j++) {
+          op.push(false);
+        }
+
+        newData.push(op);
+      } else if (data[i].Typ === "DD" && data[i].Opt.length !== 0) {
+        newData.push(data[i].Opt[0]);
+      } else {
+        newData.push("");
+      }
+
+      newMicData.push(false);
+    }
+
     const {
       match: { params },
     } = this.props;
@@ -194,15 +264,6 @@ class ResponseForm extends Component {
 
   handleSpeechToText = (index) => {
     const { formData } = this.state;
-    recognition.start();
-
-    recognition.onstart = () => {
-      this.setState({
-        micStatus: this.state.micStatus.map((c) => {
-          return true;
-        }),
-      });
-    };
 
     recognition.onresult = (e) => {
       let current = e.resultIndex;
@@ -250,20 +311,84 @@ class ResponseForm extends Component {
         }
       }
     };
+  };
+
+  voiceCommands = () => {
+    recognition.onstart = () => {
+      console.log("started");
+
+      this.setState({
+        mstat: true,
+      });
+    };
+
+    recognition.onresult = (e) => {
+      let current = e.resultIndex;
+      let transcript = e.results[current][0].transcript;
+
+      console.log(transcript + " and its type " + typeof transcript);
+      transcript = transcript.toLowerCase();
+
+      if (transcript === "shdgshjgd") {
+        // compare code
+        if (transcript.substr(0, 5) === "focus" && hasNumbers(transcript)) {
+          let number = transcript.match(/\d+/);
+
+          //focus number
+          if (number >= formData.length) {
+            let id = formData[formData.length - 1].id;
+            this.setState(
+              {
+                currentId: id,
+              },
+              () => {
+                this.storeInRedux();
+              }
+            );
+          } else {
+            let id = formData[number - 1].id;
+            this.setState(
+              {
+                currentId: id,
+              },
+              () => {
+                this.storeInRedux();
+              }
+            );
+          }
+        } else if (
+          transcript.substr(0, 6) === "submit" ||
+          transcript === "submit form"
+        ) {
+          this.submitForm();
+        } else {
+        /*  -- SELECT ANSWER --- */
+          global.toSpeech("please speak louder");
+        }
+      }
+
+      setTimeout(() => {
+        recognition.start();
+      }, 500);
+    };
 
     recognition.onspeechend = () => {
       recognition.stop();
-      console.log("voice stopped");
+
+      console.log("stopped");
+
       this.setState({
-        micStatus: this.state.micStatus.map((c) => {
-          return false;
-        }),
+        mstat: false,
       });
     };
   };
 
+  micOn = () => {
+    recognition.start();
+  };
+
   render() {
-    const { formData, popperStatus, ansData, micStatus } = this.state;
+    const { formData, popperStatus, ansData, mstat, currentIndex } = this.state;
     const { classes } = this.props;
 
     return (
@@ -302,7 +427,7 @@ class ResponseForm extends Component {
         {formData.length !== 0
           ? formData.Data.map((data, index) => (
               <ResponseFormCard
-                mstat={micStatus[index]}
+                currentIndex={currentIndex}
                 handleSpeechToText={this.handleSpeechToText}
                 data={data}
                 key={index}
@@ -313,6 +438,7 @@ class ResponseForm extends Component {
               />
             ))
           : null}
+        <MyFloatingButton onClick={this.micOn} mic disabled={mstat} />
         <MyFloatingButton onClick={this.handleOpen} done />
 
         <Dialog

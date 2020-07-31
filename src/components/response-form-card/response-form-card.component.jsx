@@ -3,6 +3,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import FormGroup from "@material-ui/core/FormGroup";
 import InputField from "../input-field/inputfield.component";
+import Divider from "@material-ui/core/Divider";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -56,15 +57,17 @@ class ResponseFormCard  extends React.Component  {
 render(){
   
 
-  const {data, index, handleChange, ansData, handleCheckBoxChange, handleSpeechToText , mstat , classes } = this.props
+
+  const { currentIndex, data, index, handleChange, ansData, handleCheckBoxChange, classes } = this.props
+
 
   let ans = ansData[index];
 
   return (
     <div>
-    {console.log(mstat)}
       <div className="card-wrapper">
-        <Card className={classes.card}>
+        <Card className={classes.card} raised={currentIndex === index ? true : false} >
+
           <CardContent>
             <div className="question">
               <Typography variant="h5" gutterBottom>
@@ -123,11 +126,6 @@ render(){
             <Tooltip title="Listen..">
               <IconButton className={classes.volumeUpIcon} onClick={this.handleTextToSpeech}>
                 <VolumeUpIcon className={classes.volumeUpIcon}></VolumeUpIcon>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Speak">
-              <IconButton className={classes.micIcon} onClick={()=> handleSpeechToText(index)} disabled={mstat} >
-                <MicIcon className={classes.micIcon}></MicIcon>
               </IconButton>
             </Tooltip>
           </CardContent>

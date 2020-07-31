@@ -4,6 +4,8 @@ import React from 'react';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import DoneIcon from '@material-ui/icons/Done';
+import MicIcon from '@material-ui/icons/Mic';
+
 
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -52,7 +54,9 @@ const useStyles = makeStyles( ( theme ) => ({
 }));
 
 
-const MyFloatingButton = (  {done, ...otherProps } ) => {
+
+const MyFloatingButton = (  { mic, done, ...otherProps } ) => {
+
 
   const classes = useStyles();
 
@@ -73,6 +77,18 @@ const MyFloatingButton = (  {done, ...otherProps } ) => {
           </Fab>
 
         :
+
+
+        mic ?
+
+          <Fab className={classes.fab} color="primary" aria-label="add" {...otherProps}>
+
+            <MicIcon />
+
+          </Fab>
+        
+        :
+
 
           <Fab className={classes.fab} color="primary" aria-label="add" {...otherProps}>
 

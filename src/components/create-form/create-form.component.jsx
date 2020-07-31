@@ -64,6 +64,7 @@ class CreateForm extends Component {
       qData: [],
       currentId: "",
       popperStatus: false,
+      mstat: false,
     };
   }
 
@@ -71,6 +72,8 @@ class CreateForm extends Component {
     if (timerID) clearTimeout(timerID);
 
     timerID = setTimeout(async () => {
+      timerID = undefined;
+
       timerID = undefined;
 
       this.props.setFormData(this.state);
@@ -366,6 +369,9 @@ class CreateForm extends Component {
     const { qData, currentId } = this.state;
     recognition.onstart = () => {
       console.log("started");
+      this.setState({
+        mstat: true,
+      });
     };
 
     recognition.onresult = (e) => {
@@ -432,10 +438,11 @@ class CreateForm extends Component {
           }
         );
       } else if (
-        transcript.substr(0, 16) === "add description" &&
+        transcript.substr(0, 15) === "add description" &&
         !!transcript.substr(18)
       ) {
-        const description = transcript.substr(18);
+        const description = transcript.substr(16);
+
         //add description 'description'
         this.setState(
           {
@@ -546,6 +553,12 @@ class CreateForm extends Component {
         global.toSpeech("Cant recognize your voice, please try again");
       }
 
+      if (transcript === "submit form") {
+        this.submitForm();
+      } else {
+        global.toSpeech("Cant recognize your voice, please try again");
+      }
+
       setTimeout(() => {
         recognition.start();
       }, 50);
@@ -555,6 +568,10 @@ class CreateForm extends Component {
       recognition.stop();
 
       console.log("stopped");
+
+      this.setState({
+        mstat: false,
+      });
     };
   };
 
@@ -565,6 +582,10 @@ class CreateForm extends Component {
   componentDidUpdate() {
     this.voiceCommands();
   }
+
+  micOn = () => {
+    recognition.start();
+  };
 
   componentDidMount() {
     console.log(this.props.reduxFormData);
@@ -614,7 +635,7 @@ class CreateForm extends Component {
         <Tooltip title="Speak">
           <IconButton
             className={classes.micIcon}
-            onClick={this.handleSpeechToText}
+            onClick={this.micOn}
             disabled={mstat}
           >
             <MicIcon className={classes.micIcon}></MicIcon>
