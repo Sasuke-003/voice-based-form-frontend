@@ -172,6 +172,7 @@ class ResponseForm extends Component {
           }
         }
       }
+      this.handleClose();
     }
 
     try {
