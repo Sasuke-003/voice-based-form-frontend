@@ -33,7 +33,7 @@ class ViewQuestion extends React.Component {
   }
 
   render() {
-    const { data, classes } = this.props;
+    const { no, data, classes } = this.props;
     return (
       <div>
         <div className="card-wrapper">
@@ -42,8 +42,8 @@ class ViewQuestion extends React.Component {
               <div className="question">
                 <Typography variant="h5" gutterBottom>
                   {data.Question === ""
-                    ? "Please write a question here..."
-                    : data.Question}
+                    ? no+".Please write a question here..."
+                    : no+"."+data.Question}
                 </Typography>
               </div>
               <div>

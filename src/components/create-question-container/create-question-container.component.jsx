@@ -10,7 +10,7 @@ class CreateQuestionContainer extends Component {
 
   render() {
 
-    const {  data, currentId, handleEdit, handleChange, addAnswer, deleteAnswer, handleAnswerChange, deleteQuestion } = this.props;
+    const { no, data, currentId, handleEdit, handleChange, addAnswer, deleteAnswer, handleAnswerChange, deleteQuestion } = this.props;
 
     return (
      
@@ -20,7 +20,8 @@ class CreateQuestionContainer extends Component {
             
             currentId === data.id ? 
 
-              <EditableQuestion  
+              <EditableQuestion 
+                no={no} 
                 data={data}
                 handleChange={handleChange} 
                 addAnswer={addAnswer} 
@@ -31,7 +32,7 @@ class CreateQuestionContainer extends Component {
 
            : 
 
-            <ViewQuestion data={data} deleteAnswer />
+            <ViewQuestion data={data} deleteAnswer no={no} />
           
           }
 

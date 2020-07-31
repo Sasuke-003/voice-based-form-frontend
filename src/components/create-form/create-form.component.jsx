@@ -14,6 +14,9 @@ import Dialog from '@material-ui/core/Dialog';
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import MicIcon from "@material-ui/icons/Mic";
+import { connect } from 'react-redux';
+
+import { setFormData } from '../../redux/form/form.action' 
 
 import { req } from '../../url/url';
 
@@ -55,90 +58,11 @@ const recognition  = new SpeechRecognition();
 recognition.start();
 
 
-recognition.onresult = (e) => {
-  let current = e.resultIndex;
-  let transcript = e.results[current][0].transcript;
 
-  console.log(transcript+' and its type '+typeof(transcript));
-  transcript=transcript.toLowerCase();
 
-  if (transcript === 'add question'){
-    global.addQuestion();
-  }
-  else if(transcript.substr(0,4) === 'add ' && transcript.includes('question') && hasNumbers(transcript) ){
+let timerID ;
+const timeOutValue = 1000 ;
 
-    console.log(transcript.substr(4,2)+'sd');
-    let number = transcript.match(/\d+/);
-    console.log('number in string is '+number);
-    //add number question
-    
-  }
-  else if(transcript.substr(0,5)==='focus' && hasNumbers(transcript)){
-    let number = transcript.match(/\d+/);
-    console.log('number in string is '+number);
-    //focus number
-
-  }
-  else if(transcript.substr(0,9)==='add title' && !!transcript.substr(10)){
-      const title=transcript.substr(10);
-      //add title 'title'
-
-  }
-  else if(transcript.substr(0,16)==='add description' && !!transcript.substr(18)){
-    const description=transcript.substr(18);
-    //add description 'description'
-
-  }
-  else if(transcript==='add option'){
-    //add option
-
-  }
-  else if(transcript.substr(0,4)==='add' && transcript.includes('options') ){
-    const number=transcript.match(/\d+/);
-    console.log('number is '+number);
-    //add 'number' option
-
-  }
-  else if(transcript.substr(0,13)==='select option' && transcript.length===15 && (transcript.substr(14)==='m'||transcript.substr(14)==='c'||transcript.substr(14)==='d'||transcript.substr(14)==='t')){
-    const option=transcript.substr(14);//m,c,d,t
-    console.log('option is o'+option);
-    //select option 'm|c|d|t'
-
-  }
-  else if(transcript.substr(0,13)==='fill question' && !!transcript.substr(14)){
-      const question=transcript.substr(14);
-      console.log('question is '+question);
-      //fill question string
-
-  }
-  else if(transcript.substr(0,11)==='fill option' && transcript.substr(15) && transcript.includes('as')){
-    const number=transcript.match(/\d+/);
-    console.log('number is '+number);
-
-    const value=transcript.substr(transcript.indexOf('as')+2);
-    console.log('value is '+value);
-    //fill option number value
-
-  }
-  else if(transcript==='remove question'){
-    //remove question
-
-  }
-  else if(transcript.substr(0,13)==='remove option' && !!transcript.substr(14)){
-    const number=transcript.match(/\d+/);
-    console.log('number is '+number);
-    //remove option number
-  }
-  else{
-    global.toSpeech('Cant recognize your voice, please try again');
-  }
-}
-
-recognition.onspeechend = () => {
-
-  recognition.stop();
-
-}
 
 
 
@@ -158,6 +82,26 @@ class CreateForm extends Component {
   }
   
 
+ 
+
+
+storeInRedux(){
+  
+
+  if ( timerID ) clearTimeout( timerID ) ;
+
+  timerID = setTimeout( async () => {
+
+      timerID = undefined ;
+               
+        this.props.setFormData(this.state);
+               
+                
+  } , timeOutValue ) ;
+
+
+
+}
   
 
   addQuestion = () => {
@@ -177,9 +121,12 @@ class CreateForm extends Component {
       () => {
         this.setState({
           currentId: this.state.qData[this.state.qData.length - 1].id,
+        },()=>{
+          this.storeInRedux();
         });
       }
     );
+ 
   };
 
   handleChange = (event, id) => {
@@ -190,14 +137,31 @@ class CreateForm extends Component {
         if (c.id !== id) return c;
         return { ...c, [name]: value };
       }),
+    },()=>{
+      this.storeInRedux();
     });
   };
+
+  handleSpeechSelectChange = (id, text) => {
+
+    this.setState({
+      qData: this.state.qData.map((c) => {
+        if (c.id !== id) return c;
+        return { ...c, AnswerType: text};
+      }),
+    },()=>{
+      this.storeInRedux();
+    });
+
+  }
 
   handleTitleChange = (event) => {
 
     const { name, value } = event.target;
     this.setState({
       [name]: value
+    },()=>{
+      this.storeInRedux();
     })
 
   } 
@@ -213,6 +177,8 @@ class CreateForm extends Component {
             currentId: this.state.qData[this.state.qData.length - 1].id,
           });
         }
+      },()=>{
+        this.storeInRedux();
       }
     );
   };
@@ -231,6 +197,8 @@ class CreateForm extends Component {
 
     this.setState({
       qData: newArray,
+    },()=>{
+      this.storeInRedux();
     });
   };
 
@@ -248,8 +216,37 @@ class CreateForm extends Component {
 
     this.setState({
       qData: newArray,
+    },()=>{
+      this.storeInRedux();
     });
   };
+
+  handleSpeechDeleteAnswer = (qId, aIndex) => {
+    const elementsIndex = this.state.qData.findIndex(
+      (element) => element.id === qId
+    );
+
+    if(this.state.qData[elementsIndex].Answers.length<aIndex ){
+      global.toSpeech("option "+aIndex+" is not available");
+    }
+    else if(this.state.qData[elementsIndex].AnswerType === 'TF'){
+      global.toSpeech("Cannot delete option type of textfield ");
+    }
+    else{
+      let newArray = [...this.state.qData];
+
+      newArray[elementsIndex].Answers.splice(aIndex, 1);
+  
+      this.setState({
+        qData: newArray,
+      },()=>{
+        this.storeInRedux();
+      });
+    }
+
+
+    
+  }
 
   handleAnswerChange = (event, qId, aId) => {
     const { value } = event.target;
@@ -267,26 +264,61 @@ class CreateForm extends Component {
 
     this.setState({
       qData: newArray,
+    },()=>{
+      this.storeInRedux();
     });
   };
+
+  handleSpeechAnswerChange = ( text, qId, aIndex ) => {
+
+    const elementsIndex = this.state.qData.findIndex(
+      (element) => element.id === qId
+    );
+
+    if(this.state.qData[elementsIndex].Answers.length<aIndex ){
+      global.toSpeech("option "+aIndex+" is not available");
+    }
+    else if(this.state.qData[elementsIndex].AnswerType === 'TF'){
+      global.toSpeech("Cannot edit option type of textfield ");
+    }
+    else{
+      let newArray = [...this.state.qData];
+
+      newArray[elementsIndex].Answers[aIndex].value = text;
+  
+      this.setState({
+        qData: newArray,
+      },()=>{
+        this.storeInRedux();
+      });
+    }
+    
+
+  }
 
   handleEdit = (id) => {
     if (this.state.id !== id) {
       this.setState({
         currentId: id,
+      },()=>{
+        this.storeInRedux();
       });
     }
   };
 
   handleClose = (event) => {
 
-    this.setState( { popperStatus: false } );
+    this.setState( { popperStatus: false } ,()=>{
+      this.storeInRedux();
+    });
 
   }
 
   handleOpen = (event) => {
 
-    this.setState( { popperStatus: true } );
+    this.setState( { popperStatus: true },()=>{
+      this.storeInRedux();
+    } );
 
   }
 
@@ -343,6 +375,8 @@ class CreateForm extends Component {
       currentId: "",
       popperStatus: false,
       mstat: false,
+    },()=>{
+      this.storeInRedux();
     })
 
    alert("successfully created")
@@ -353,26 +387,206 @@ class CreateForm extends Component {
   }
 
 
-  handleSpeechToText = () => {
+  voiceCommands = () => {
 
-    recognition.start();
+    const { qData, currentId } = this.state;
+    recognition.onstart = () => {
+      console.log('started');
+    }
 
-   
+
+    recognition.onresult = (e) => {
+      let current = e.resultIndex;
+      let transcript = e.results[current][0].transcript;
+    
+      console.log(transcript+' and its type '+typeof(transcript));
+      transcript=transcript.toLowerCase();
+    
+      if (transcript === 'add question'){
+        this.addQuestion();
+      }
+      else if(transcript.substr(0,4) === 'add ' && transcript.includes('question') && hasNumbers(transcript) ){
+    
+        console.log(transcript.substr(4,2)+'sd');
+        let number = transcript.match(/\d+/);
+        console.log('number in string is '+number);
+        //add number question
+        for(let i=0;i<number;i++){
+          this.addQuestion();
+        }
+        
+      }
+      else if(transcript.substr(0,5)==='focus' && hasNumbers(transcript)){
+        let number = transcript.match(/\d+/);
+        console.log('number in string is '+number);
+        //focus number
+        if(number>=qData.length){
+            let id = qData[qData.length-1].id;
+            this.setState({
+              currentId: id
+            },()=>{
+              this.storeInRedux();
+            })
+        }
+        else{
+          let id = qData[number-1].id;
+          this.setState({
+            currentId: id
+          },()=>{
+            this.storeInRedux();
+          })
+        }
+    
+      }
+      else if(transcript.substr(0,9)==='add title' && !!transcript.substr(10)){
+          const title=transcript.substr(10);
+          //add title 'title'
+          this.setState({
+            Title: title
+          },()=>{
+            this.storeInRedux();
+          })
+    
+      }
+      else if(transcript.substr(0,16)==='add description' && !!transcript.substr(18)){
+        const description=transcript.substr(18);
+        //add description 'description'
+        this.setState({
+          Desc: description 
+        },()=>{
+          this.storeInRedux();
+        })
+      }
+      else if(transcript==='add option'){
+        //add option
+        let typ = '';
+        for(let i=0;i<qData.length;i++){
+          if(currentId===qData[i].id){
+            typ=qData[i].AnswerType;
+          }
+        }
+        if(typ==='TF'){
+          global.toSpeech("Cannot add options for Text Field");
+        }
+        else{
+          this.addAnswer(currentId);
+        }
+    
+      }
+      else if(transcript.substr(0,3)==='add' && transcript.includes('options') ){
+        const number=transcript.match(/\d+/);
+        console.log('number is '+number);
+        //add 'number' option
+        let typ = '';
+        for(let i=0;i<qData.length;i++){
+          if(currentId===qData[i].id){
+            typ=qData[i].AnswerType;
+          }
+        }
+        if(typ==='TF'){
+          global.toSpeech("Cannot add options for Text Field");
+        }
+        else{
+          for(let j=0;j<number;j++){
+            this.addAnswer(currentId);
+          }
+        }
+    
+      }
+      else if(transcript.substr(0,13)==='select option' && transcript.length>=15 && (transcript.substr(14)==='multiple choice'|| transcript.substr(14)==='multiplechoice' ||transcript.substr(14)==='checkbox'||transcript.substr(14)==='dropdown'||transcript.substr(14)==='textfield' || transcript.substr(14)==='check box'||transcript.substr(14)==='drop down'||transcript.substr(14)==='text field')){
+        const option=transcript.substr(14);//m,c,d,t
+        console.log('option is '+option);
+        if(option === 'multiplechoice' || option === 'multiple choice' ){
+          this.handleSpeechSelectChange(currentId, 'RB')
+        }
+        else if(option === 'checkbox' || option === 'check box'){
+          this.handleSpeechSelectChange(currentId, 'CB')
+        }
+        else if(option === 'textfield' || option === 'text field'){
+          this.handleSpeechSelectChange(currentId, 'RB')
+        }
+        else if(option === 'dropdown' || option === 'drop down'){
+          this.handleSpeechSelectChange(currentId, 'DD')
+        }
+    
+      }
+      else if(transcript.substr(0,13)==='edit question' && !!transcript.substr(14)){
+          const question=transcript.substr(14);
+          console.log('question is '+question);
+          //fill question string
+          this.setState({
+            qData: this.state.qData.map((c) => {
+              if (c.id !== currentId) return c;
+              return { ...c, Question: question};
+            }),
+          },()=>{
+            this.storeInRedux();
+          });
+    
+      }
+      else if(transcript.substr(0,11)==='edit option' && transcript.substr(15) && transcript.includes('as')){
+        const number=transcript.match(/\d+/);
+        console.log('number is '+number);
+    
+        const value=transcript.substr(transcript.indexOf('as')+2);
+        console.log('value is '+value);
+        //fill option number value
+        this.handleSpeechAnswerChange( value, currentId, number-1 );
+
+    
+      }
+      else if(transcript==='remove question'){
+        //remove question
+        this.deleteQuestion(currentId);
+    
+      }
+      else if(transcript.substr(0,13)==='remove option' && !!transcript.substr(14)){
+        const number=transcript.match(/\d+/);
+        console.log('number is '+number);
+        //remove option number
+        this.handleSpeechDeleteAnswer(currentId, number);
+      }
+      else{
+        global.toSpeech('Cant recognize your voice, please try again');
+      }
+
+
+      setTimeout(()=> {
+        recognition.start();
+      }, 50);
+
+    }
+
+    recognition.onspeechend = () => {
+
+      recognition.stop();
+
+      console.log('stopped')
+
+      
+
+    }
+  
+  
+  }
+
+  componentWillUpdate(){
+    this.voiceCommands();
+  }
+
+  componentDidUpdate(){
+    this.voiceCommands();
+  }
 
   
 
-
-}
-
-
-
-  
 
   componentDidMount() {
-
-    global.addQuestion = this.addQuestion;
     
-    this.addQuestion();
+    console.log(this.props.reduxFormData);
+    this.setState(this.props.reduxFormData)
+
+    this.voiceCommands();
   }
 
   render() {
@@ -412,8 +626,9 @@ class CreateForm extends Component {
         </IconButton>
       </Tooltip>
 
-        {qData.map((data) => (
+        {qData.map((data, index) => (
           <CreateQuestionContainer
+            no={index+1}
             key={data.id}
             data={data}
             currentId={currentId}
@@ -462,5 +677,18 @@ class CreateForm extends Component {
   }
 }
 
+const mapStatetoProps = state => ({
 
-export default withStyles(useStyles)(CreateForm);
+  reduxFormData : state.form.data
+
+});
+
+
+const mapDispatchToProps = dispatch => ({
+
+  setFormData: data => dispatch(setFormData(data))
+  
+});
+
+
+export default withStyles(useStyles)( connect( mapStatetoProps ,mapDispatchToProps )( CreateForm));

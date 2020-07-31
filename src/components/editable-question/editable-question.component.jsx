@@ -81,7 +81,7 @@ class EditableQuestion extends Component {
 
   render() {
 
-    const { data, handleChange, deleteQuestion, addAnswer, deleteAnswer, handleAnswerChange, classes } = this.props;
+    const { no, data, handleChange, deleteQuestion, addAnswer, deleteAnswer, handleAnswerChange, classes } = this.props;
 
     return (
         <div className="card-wrapper" >
@@ -92,8 +92,10 @@ class EditableQuestion extends Component {
 
               <Grid container component='div' spacing={1} >
 
-              <Grid item xs={12}>
               
+
+              <Grid item xs={12}>
+{no}
                 <InputField
                   className={classes.question}
                   id="filled-basic"
