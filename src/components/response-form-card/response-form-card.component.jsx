@@ -65,7 +65,7 @@ render(){
           <CardContent>
             <div className="question">
               <Typography variant="h5" gutterBottom>
-                {data.Que}
+                {(index+1+'.')+data.Que}
               
               </Typography>
             

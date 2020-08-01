@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { req } from "../../url/url";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 
 class MyForms extends Component {
   constructor(props) {
@@ -45,13 +46,10 @@ class MyForms extends Component {
   setLinkToState = async () => {
     try {
       const res = await req.form.list(this.state.page);
-      let newList = [];
-      for (let i = 0; i < res.length; i++) {
-        newList.push("/forms/" + res[i]._id);
-      }
       this.setState({
-        links: newList,
+        links: res,
       });
+      console.log(res)
     } catch (error) {
       console.log(error);
     }
@@ -100,8 +98,9 @@ class MyForms extends Component {
                   }}
                 >
                   <CardContent>
-                    <Link to={link} variant="body2">
-                      {link}
+                  <Typography variant='h4' >{link.Title}</Typography>
+                    <Link to={'/forms/'+link._id} variant="body2">
+                      {'/forms/'+link._id}
                     </Link>
                   </CardContent>
                 </Card>
